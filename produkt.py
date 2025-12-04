@@ -1,60 +1,119 @@
 from datetime import datetime
+from abc import ABC, abstractmethod
+import uuid
 
-class Produkt:
-    def __init__(self, id, name, dataWaznosci, tagi=None, ilosc=0, jednostka="sztuk"):
-        self._id = id
+# Abstrakcja - robi taki szablon ze wszystko co korzysta z tego ma te dane
+class Produkt(ABC):
+    def __init__(self, name, data_waznosci=None):
+        self._id = str(uuid.uuid4().hex)[:8]
         self._name = name
-        self._tagi = tagi if tagi is not None else []
-        self._dataWaznosci = self._parse_date(dataWaznosci)
-        self._ilosc = ilosc
-        self._jednostka = jednostka
+        self._data_waznosci = None
 
-    # -------------------- Get
-    def getId(self):
+        self.data_waznosci = data_waznosci
+
+    # ENKAPSULACJA (Gettery i Settery)
+    @property
+    def id(self):
         return self._id
 
-    def getName(self):
+    @property
+    def ile_dni_waznosci(self):
+        """Zwraca liczbe dni do końca ważności lub None"""
+
+        if self._data_waznosci is None:
+            return None
+
+        dzis = datetime.now().date()
+        delta = self._data_waznosci - dzis
+
+        return delta.days
+
+    @property
+    def name(self):
         return self._name
 
-    def getDataWaznosci(self):
-        return self._dataWaznosci
+    @name.setter
+    def name(self, nowa_nazwa):
+        if not nowa_nazwa:
+            print("Błąd: Nazwa nie może być pusta!")
+        else:
+            self._name = nowa_nazwa
 
-    def getTagi(self):
-        return self._tagi
+    @property
+    def data_waznosci(self):
+        return self._data_waznosci
 
-    def getIlosc(self):
-        return self._ilosc
+    @data_waznosci.setter
+    def data_waznosci(self, nowa_data):
+        if nowa_data is None:
+            self._data_waznosci = None
+            return
 
-    def getJednostka(self):
-        return self._jednostka
+        if isinstance(nowa_data, str):
+            try:
+                self._data_waznosci = datetime.strptime(nowa_data, "%Y-%m-%d").date()
+            except ValueError:
+                print(f"Błąd: Zły foramt daty '{nowa_data}'. Użyj YYYY-MM-DD")
+        elif isinstance(nowa_data, datetime) or isinstance(nowa_data, datetime.date):
+            self._data_waznosci = nowa_data
 
-    # -------------------- Set
-    def setName(self, new_name):
-        self._name = new_name
+    @abstractmethod
+    def getInfo(self):
+        pass
 
-    def setDataWaznosci(self, data):
-        self._dataWaznosci = self._parse_date(data)
-
-    def setTagi(self, tagi):
-        self._tagi = tagi
-
-    def setIlosc(self, ilosc):
+class ProduktSztuki(Produkt):
+    def __init__(self, name, data_waznosci=None, ilosc=0):
+        super().__init__(name, data_waznosci)
         self._ilosc = ilosc
 
-    def setJednostka(self, jednostka):
-        self._jednostka = jednostka
+    @property
+    def jednostka(self):
+        return "szt"
 
-    # -------------------- Tagi
-    def addTag(self, tag):
-        if tag not in self._tagi:
-            self._tagi.append(tag)
+    @property
+    def ilosc(self):
+        return self._ilosc
 
-    def removeTag(self, tag):
-        if tag in self._tagi:
-            self._tagi.remove(tag)
+    @ilosc.setter
+    def ilosc(self, nowa_ilosc):
+        if nowa_ilosc < 0:
+            print("Błąd: Ilość sztuk nie może być ujemna!")
+        else:
+            self._ilosc = nowa_ilosc
 
-    # -------------------- Sprawdz date
-    def isExpired(self):
-        return datetime.now() > self._dataWaznosci
+    def getInfo(self):
+        data_str = str(self._data_waznosci) if self._data_waznosci else "Brak daty"
+        return f"[ID: {self._id}] {self._name}: {self._ilosc} szt. (Ważne do: {data_str} {self.ile_dni_waznosci} dni)"
 
+class ProduktWaga(Produkt):
+    def __init__(self, name, data_waznosci=None, ilosc=0.0, jednostka="kg"):
+        super().__init__(name, data_waznosci)
+        self._ilosc = ilosc
+        self._jednostka = None
 
+        self.jednostka = jednostka
+
+    @property
+    def jednostka(self):
+        return self._jednostka
+
+    @jednostka.setter
+    def jednostka(self, nowa_jednostka):
+        if nowa_jednostka in ['kg','g','l','ml']:
+            self._jednostka = nowa_jednostka
+        else:
+            raise ValueError(f"Błąd krytyczny! '{nowa_jednostka}' to niedozwolona jednostka!")
+    @property
+    def ilosc(self):
+        return self._ilosc
+
+    @ilosc.setter
+    def ilosc(self, nowa_ilosc):
+        if nowa_ilosc < 0:
+            print("Błąd: Waga nie może być ujemna!")
+        else:
+            self._ilosc = float(nowa_ilosc)
+
+    def getInfo(self):
+        data_str = str(self._data_waznosci) if self._data_waznosci else "Brak daty"
+        return f"[ID: {self._id}] {self._name}: {self._ilosc} {self.jednostka} (Ważne do: {data_str} {self.ile_dni_waznosci} dni)"

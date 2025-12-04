@@ -1,16 +1,20 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
+from katalog import Katalog
+from produkt import ProduktSztuki, ProduktWaga
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    jajka = ProduktSztuki("Jajka", "2025-12-24", 10)
+    mleko = ProduktWaga("Mleko", "2025-12-05", 1.5, "l")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print(jajka.getInfo())
+    print(mleko.getInfo())
+
+    print("\n--- Test zabezpieczeń ---")
+
+    mleko.ilosc = -5
+    print(f"Waga po błędzie (bez zmian): {mleko.ilosc}")
+
+    jajka.data_waznosci = "Bzdura"
+
+    jajka.ilosc = 20
+    print(f"Nowa ilość jajek: {jajka.ilosc}")
