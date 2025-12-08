@@ -5,15 +5,20 @@ class Katalog:
     def addProdukt(self, produkt):
         self._produkty.append(produkt)
 
-    def wyswietl(self):
+    def displayAll(self):
         for p in self._produkty:
             print(p.getInfo())
 
-    # Zmiana na usuwanie po id żeby przypadkiem nie
-    # wywalić wszystkich o tych samych nazwach
-def removeProduktById(self, id):
+    def getProductById(self, id_to_get):
+        """"Zwraca obiekt produktu lub None, jeśli nie znaleziono"""
         for p in self._produkty:
-            if p.getId() == id:
+            if p.id == id_to_get:
+                return p
+        return None
+
+    def removeProductById(self, id):
+        for p in self._produkty:
+            if p.id == id:
                 self._produkty.remove(p)
                 return True
         return False
