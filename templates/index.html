@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>ZeroWaste - Dev Build</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <h1>ZeroWaste App (Wersja Robocza)</h1>
-    <hr>
-
+{% block content %}
     <h3>Dodaj nowy produkt</h3>
+<!--  Formularz dodawania produktów -->
     <form action="/dodaj" method="post">
         <label>Nazwa produktu:</label><br>
         <input type="text" name="nazwa" placeholder="np. Mleko" required>
@@ -20,7 +13,7 @@
         <br><br>
 
         <label>Ilość:</label><br>
-        <input type="number" name="ilosc" step="0.1" placeholder="0" required>
+        <input type="number" name="ilosc" step="0.1" placeholder="0" min="0" required>
         <br><br>
 
         <label>Jednostka:</label><br>
@@ -41,6 +34,8 @@
     <h3>Twoja Lodówka</h3>
 
     <ul>
+<!-- Generowanei listy produktów -->
+<!-- TODO Dodac możliwość usuwania wybranej ilości, np jak użyjemy tylko części -->
         {% for p in produkty %}
             <li>
                 <strong>{{ p.name }}</strong>
@@ -66,6 +61,4 @@
     {% if not produkty %}
         <p><i>Brak produktów. Dodaj coś formularzem powyżej.</i></p>
     {% endif %}
-
-</body>
-</html>
+{% endblock %}
