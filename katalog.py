@@ -9,12 +9,12 @@ class Katalog:
         for p in self._produkty:
             print(p.getInfo())
 
-    # Zmiana na usuwanie po id żeby przypadkiem nie
-    # wywalić wszystkich o tych samych nazwach
-def removeProduktById(self, id):
+    def getAll(self):
+        return self._produkty
+
+    def removeProduktById(self, id_produktu):
         for p in self._produkty:
-            if p.getId() == id:
+            if p.id == id_produktu:
                 self._produkty.remove(p)
                 return True
         return False
-
