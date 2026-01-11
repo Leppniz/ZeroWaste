@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+    <div>
+        <h1>Suma produktów: {{ product_count }}</h1>
+    </div>
+    <div>
+        <h1>Zamrożone produkty: {{ frozen_count }}</h1>
+    </div>
+    <div>
+        <h1>Bliski termin: {{ close_date_count }}</h1>
+    </div>
+
+{% endblock %}
