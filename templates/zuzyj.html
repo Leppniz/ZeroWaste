@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Zużyj produkt{% endblock %}
+
+{% block content %}
+
+    <h2>🍽️ Zużywanie produktu</h2>
+    <hr>
+
+    <p>
+        Produkt: <b>{{ p.name }}</b> <br>
+        Stan obecny: <b>{{ p.ilosc }} {{ p.jednostka }}</b>
+    </p>
+
+    <form method="post">
+        <label>Ile zużyłeś?</label><br>
+
+        <input type="number" name="zuzyta_ilosc" step="0.01" placeholder="np. 0.5" required autofocus>
+
+        <span>{{ p.jednostka }}</span>
+
+        <br><br>
+
+        <button type="submit">Zapisz zmianę</button>
+
+        &nbsp; lub &nbsp;
+        <a href="{{ url_for('lista_produktow') }}">Anuluj i wróć</a>
+    </form>
+
+{% endblock %}
