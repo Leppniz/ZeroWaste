@@ -45,7 +45,7 @@
                 Status:
                 {% if p.ile_dni_waznosci < 0 %}
                     [PRZETERMINOWANE!]
-                {% elif p.ile_dni_waznosci < 7 %}
+                {% elif p.ile_dni_waznosci <= limit_dni %}
                     [ZJEDZ SZYBKO]
                 {% else %}
                     [OK]
