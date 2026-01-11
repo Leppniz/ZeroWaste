@@ -4,11 +4,11 @@ import uuid
 
 # Abstrakcja - robi taki szablon ze wszystko co korzysta z tego ma te dane
 class Produkt(ABC):
-    def __init__(self, name, data_waznosci=None):
+    def __init__(self, name, data_waznosci=None, isFrozen=False):
         self._id = str(uuid.uuid4().hex)[:8]
         self._name = name
         self._data_waznosci = None
-        self._isFrozen = False
+        self._isFrozen = isFrozen
         self._frozenDays = 64
 
         self.data_waznosci = data_waznosci
@@ -83,8 +83,8 @@ class Produkt(ABC):
         pass
 
 class ProduktSztuki(Produkt):
-    def __init__(self, name, data_waznosci=None, ilosc=0):
-        super().__init__(name, data_waznosci)
+    def __init__(self, name, data_waznosci=None, ilosc=0, isFrozen=False):
+        super().__init__(name, data_waznosci, isFrozen)
         self._ilosc = ilosc
 
     @property
@@ -107,8 +107,8 @@ class ProduktSztuki(Produkt):
         return f"[ID: {self._id}] {self._name}: {self._ilosc} szt. (Ważne do: {data_str} {self.ile_dni_waznosci} dni)"
 
 class ProduktWaga(Produkt):
-    def __init__(self, name, data_waznosci=None, ilosc=0.0, jednostka="kg"):
-        super().__init__(name, data_waznosci)
+    def __init__(self, name, data_waznosci=None, ilosc=0.0, jednostka="kg", isFrozen=False):
+        super().__init__(name, data_waznosci, isFrozen)
         self._ilosc = ilosc
         self._jednostka = None
 
@@ -136,5 +136,5 @@ class ProduktWaga(Produkt):
             self._ilosc = float(nowa_ilosc)
 
     def getInfo(self):
-        data_str = str(self._data_waznosci) if self._data_waznosci else "Brak daty"
+        data_str = str(self.data_waznosci) if self._data_waznosci else "Brak daty"
         return f"[ID: {self._id}] {self._name}: {self._ilosc} {self.jednostka} (Ważne do: {data_str} {self.ile_dni_waznosci} dni)"
