@@ -39,7 +39,7 @@ def lista_produktow():
     # Pobieramy listę obiektów z Katalog
     lista = moj_katalog.getAll()
     # Przekazanie do HTML'a
-    return render_template('index.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
+    return render_template('lista.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
 
 
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
