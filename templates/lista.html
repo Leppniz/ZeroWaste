@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Twoja Lodówka</h2>
+            <p class="text-gray-500 text-sm">Zarządzaj swoimi zapasami.</p>
+        </div>
+        
+        <a href="{{ url_for('dodaj_produkt') }}" class="sm:hidden w-full text-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50 transition">
+            + Dodaj nowy produkt
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        
+        {% if produkty %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                        <th class="p-4 font-semibold">Produkt</th>
+                        <th class="p-4 font-semibold">Ilość</th>
+                        <th class="p-4 font-semibold">Data ważności</th>
+                        <th class="p-4 font-semibold">Status</th>
+                        <th class="p-4 font-semibold text-right">Akcje</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for p in produkty %}
+                    <tr class="hover:bg-gray-50 transition-colors group">
+
+                        <td class="p-4 font-medium text-gray-800">
+                            {{ p.name }}
+                            {% if p.isFrozen %}
+                                <span class="text-xs ml-2 text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-100" title="Zamrożone">❄️ Mrożone</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="p-4 text-gray-600">
+                            <span class="font-bold text-gray-800">{{ p.ilosc }}</span> {{ p.jednostka }}
+                        </td>
+
+                        <td class="p-4 text-gray-600 font-mono text-sm">
+                            {{ p.data_waznosci }}
+                        </td>
+
+                        <td class="p-4">
+                            {% if p.ile_dni_waznosci < 0 %}
+                                <span class="inline-flex text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                                    Przeterminowane
+                                </span>
+                            {% elif p.ile_dni_waznosci <= limit_dni %}
+                                <span class="inline-flex w-full justify-center text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                    Zjedz szybko <br> ({{ p.ile_dni_waznosci }} dni)
+                                </span>
+                            {% else %}
+                                <span class="inline-flex w-full justify-center text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                    OK <br> ({{ p.ile_dni_waznosci }} dni)
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="p-4 text-right space-x-2 whitespace-nowrap">
+                            <a href="/zuzyj/{{ p.id }}"
+                               class="inline-block text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition">
+                                🍴 Zużyj
+                            </a>
+
+                            <a href="/usun/{{ p.id }}"
+                               onclick="return confirm('Czy na pewno chcesz usunąć {{ p.name }}?')"
+                               class="inline-block text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition">
+                                🗑️ Usuń
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% else %}
+            <div class="text-center py-16">
+                <div class="text-6xl mb-4">📭</div>
+                <h3 class="text-xl font-medium text-gray-900">Twoja lodówka jest pusta</h3>
+                <p class="text-gray-500 mt-1 mb-6">Dodaj pierwsze produkty, aby zacząć kontrolować terminy.</p>
+                <a href="{{ url_for('dodaj_produkt') }}" class="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 shadow transition">
+                    + Dodaj pierwszy produkt
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
