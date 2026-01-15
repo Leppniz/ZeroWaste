@@ -33,7 +33,7 @@ def strona_glowna():
 
     return render_template('dashboard.html', **context)
 
-@app.route('/list')
+@app.route('/lista')
 def lista_produktow():
     # Pobieramy listę obiektów z Katalog
     lista = moj_katalog.getAll()
