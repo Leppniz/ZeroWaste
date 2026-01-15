@@ -1,15 +1,59 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <div>
-        <h1>Suma produktów: {{ product_count }}</h1>
-    </div>
-    <div>
-        <h1>Zamrożone produkty: {{ frozen_count }}</h1>
-    </div>
-    <div>
-        <h1>Bliski termin: {{ close_date_count }}</h1>
+    <div class="bg-white p-6 rounded-lg shadow-sm mb-8 border-l-4 border-green-500">
+        <h1 class="text-3xl font-bold text-gray-800 mb-1">Dzień dobry! 👋</h1>
+        <p class="text-gray-600">
+            Stan Twojej lodówki na dzisiaj.
+        </p>
     </div>
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-blue-500">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Wszystkie produkty</p>
+            <div class="flex items-center justify-between">
+                <span class="text-4xl font-bold text-gray-800">{{ product_count }}</span>
+                <span class="text-3xl grayscale opacity-50">🧺</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-cyan-400">
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Zamrażarka</p>
+            <div class="flex items-center justify-between">
+                <span class="text-4xl font-bold text-gray-800">{{ frozen_count }}</span>
+                <span class="text-3xl grayscale opacity-50">❄️</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-orange-500">
+            <p class="text-xs font-bold text-orange-500 uppercase tracking-wider mb-1">Krótki termin!</p>
+            <div class="flex items-center justify-between">
+                <span class="text-4xl font-bold text-orange-600">{{ close_date_count }}</span>
+                <span class="text-3xl grayscale opacity-50">⏰</span>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border-t-4 border-red-500">
+            <p class="text-xs font-bold text-red-500 uppercase tracking-wider mb-1">Po terminie!</p>
+            <div class="flex items-center justify-between">
+                <span class="text-4xl font-bold text-red-600">{{ expired_count }}</span>
+                <span class="text-3xl grayscale opacity-50">🗑️</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="rounded-xl p-8 text-center">
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="{{ url_for('lista_produktow') }}"
+               class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full shadow transition-colors">
+               + Dodaj nowy produkt
+            </a>
+
+            <a href="{{ url_for('lista_produktow') }}"
+               class="bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-8 rounded-full hover:bg-gray-50 transition-colors">
+               Zobacz listę
+            </a>
+        </div>
+    </div>
 {% endblock %}

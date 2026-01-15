@@ -2,22 +2,27 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ZeroWaste App{% endblock %}</title>
-</head>
-<body style="margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
 
-    <nav style="background-color: #eee; padding: 1rem;">
-        <b>ZeroWaste v0.1</b> |
-        <a href="{{ url_for('strona_glowna') }}">Strona Główna</a> |
-        <a href="{{ url_for('lista_produktow') }}">Lista</a>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
+
+    <nav class="bg-white shadow p-4 mb-6 flex gap-4 items-center">
+        <div class="text-xl font-bold text-green-600">ZeroWaste v0.1</div>
+
+        <a href="{{ url_for('strona_glowna') }}" class="hover:text-green-600 hover:underline transition">Strona Główna</a>
+        <a href="{{ url_for('lista_produktow') }}" class="hover:text-green-600 hover:underline transition">Lista</a>
     </nav>
 
-    <div class="container" style="flex: 1; padding: 20px;">
+    <div class="flex-grow container mx-auto px-4">
         {% block content %}
         {% endblock %}
     </div>
 
-    <footer style="background-color: #f9f9f9; border-top: 1px solid #ccc; padding: 10px; font-size: 0.8em; text-align: center;">
+    <footer class="mt-10 border-t border-gray-300 p-4 text-center text-sm text-gray-500 bg-gray-100">
         &copy; 2026 Projekt zaliczeniowy.
     </footer>
 

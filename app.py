@@ -27,7 +27,7 @@ def strona_glowna():
     context = {
         'product_count': moj_katalog.count_all(),
         'close_date_count': moj_katalog.count_expiring_soon(),
-        # 'expired_count': moj_katalog.count_expired(),
+        'expired_count': moj_katalog.count_expired(),
         'frozen_count': moj_katalog.count_frozen()
     }
 
