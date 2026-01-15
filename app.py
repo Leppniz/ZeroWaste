@@ -1,6 +1,6 @@
 from itertools import count
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from katalog import Katalog
 from produkt import ProduktSztuki, ProduktWaga
 from settings import DAYS_TO_WARNING
@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 # Config - zeby widziec zmiany od razu
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SECRET_KEY'] = 'TAJNY_KLUCZ'
 
 # Tworzymy JEDEN wspólny katalog dla całej aplikacji
 moj_katalog = Katalog()
@@ -80,30 +81,49 @@ def usun_produkt(id_produktu):
     return redirect(request.referrer or url_for('strona_glowna'))
 
 
-@app.route('/dodaj', methods=['POST'])
+@app.route('/dodaj', methods=['GET', 'POST'])
 def dodaj_produkt():
-    # 1. Pobieramy dane
-    nazwa = request.form.get('nazwa')
-    data = request.form.get('data')
-    try:
-        ilosc = float(request.form.get('ilosc'))
-    except ValueError:
-        ilosc = 0  # Zabezpieczenie jak ktoś wpisze głupoty
+    # === POST: Zapisujemy dane ===
+    if request.method == 'POST':
+        nazwa = request.form.get('nazwa')
+        data = request.form.get('data')
 
-    jednostka = request.form.get('wybrana_jednostka')
+        try:
+            ilosc = float(request.form.get('ilosc'))
+        except ValueError:
+            ilosc = 0.0
 
-    # 2. Logika wyboru klasy (OOP)
-    if jednostka == 'szt':
-        # Dla sztuk ilosc musi byc int
-        nowy_produkt = ProduktSztuki(nazwa, data, int(ilosc))
-    else:
-        # Dla wagi/objętości przekazujemy wybraną jednostkę (kg, g, l, ml)
-        nowy_produkt = ProduktWaga(nazwa, data, ilosc, jednostka)
+        jednostka = request.form.get('wybrana_jednostka')
 
-    # 3. Dodanie do katalogu
-    moj_katalog.addProdukt(nowy_produkt)
+        # 1. Sprawdzamy czy użytkownik zaznaczył "Zamrożone"
+        # Checkbox zwraca 'on' jeśli zaznaczony, albo None jeśli nie
+        jest_mrozone = request.form.get('czy_zamrozone') is not None
 
-    return redirect(request.referrer or url_for('strona_glowna'))
+        # 2. Tworzymy obiekt (OOP)
+        if jednostka == 'szt':
+            nowy_produkt = ProduktSztuki(nazwa, data, int(ilosc))
+        else:
+            nowy_produkt = ProduktWaga(nazwa, data, ilosc, jednostka)
+
+        # Ustawiamy flagę zamrożenia (musisz mieć pole is_frozen w klasie Produkt!)
+        nowy_produkt.isFrozen = jest_mrozone
+
+        # 3. Dodajemy do katalogu
+        moj_katalog.addProdukt(nowy_produkt)
+
+        # 4. Sprawdzamy czy user chce dodać kolejny, czy wyjść
+        chce_kolejny = request.form.get('dodaj_kolejny')
+
+        if chce_kolejny:
+            # Jeśli zaznaczył "Dodaj kolejny", wyświetlamy komunikat i zostajemy tu
+            flash(f"Dodano produkt: {nazwa}. Możesz dodać następny.")
+            return redirect(url_for('dodaj_produkt'))
+        else:
+            # Standardowo wracamy na listę
+            return redirect(url_for('lista_produktow'))
+
+    # === GET: Wyświetlamy formularz ===
+    return render_template('dodaj.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
