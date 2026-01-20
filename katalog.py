@@ -31,6 +31,23 @@ class Katalog:
 
     # === METODY LOGIKI BIZNESOWEJ ===
 
+    def get_grouped_by_name(self):
+        grupa = {}
+
+        for p in self._produkty:
+            nazwa_ladna = p.name.strip().capitalize()
+
+            if nazwa_ladna not in grupa:
+                grupa[nazwa_ladna] = {
+                    'ilosc': 0,
+                    'jednostka': p.jednostka
+                }
+
+            if p.jednostka == grupa[nazwa_ladna]['jednostka']:
+                grupa[nazwa_ladna]['ilosc'] += p.ilosc
+
+        return grupa
+
     def count_all(self):
         return len(self._produkty)
 

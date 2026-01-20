@@ -34,13 +34,20 @@ def strona_glowna():
 
     return render_template('dashboard.html', **context)
 
+
 @app.route('/lista')
 def lista_produktow():
-    # Pobieramy listę obiektów z Katalog
-    lista = moj_katalog.getAll()
-    # Przekazanie do HTML'a
-    return render_template('lista.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
+    # Pobieramy tryb z paska adresu (domyślnie 'szczegoly')
+    tryb = request.args.get('tryb', 'szczegoly')
 
+    if tryb == 'ogolne':
+        # Pobieranie listy zgrupowanej po nazwie
+        produkty_data = moj_katalog.get_grouped_by_name()
+    else:
+        # Pobieranie normalnej listy produktów
+        produkty_data = moj_katalog.getAll()
+
+    return render_template('lista.html', produkty=produkty_data, tryb=tryb, limit_dni=DAYS_TO_WARNING)
 
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
 def zuzyj_produkt_strona(id_produktu):
