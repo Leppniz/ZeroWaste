@@ -68,7 +68,6 @@
                     <thead class="hidden md:table-header-group">
                         <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                             <th class="px-4 py-4 font-semibold">Produkt</th> <th class="px-4 py-4 font-semibold">Data ważności</th>
-                            <th class="px-4 py-4 font-semibold">Status</th>
                             <th class="px-4 py-4 font-semibold text-right">Ilość</th> <th class="px-4 py-4 font-semibold text-right">Akcje</th>
                         </tr>
                     </thead>
@@ -145,6 +144,11 @@
                                        onclick="return confirm('Czy na pewno chcesz usunąć {{ p.name }}?')"
                                        class="flex-none justify-center items-center inline-flex text-sm bg-white border border-gray-300 text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 hover:border-red-300 transition shadow-sm">
                                         🗑️
+                                    </a>
+
+                                    <a href="/zmien/{{ p.id }}"
+                                       class="flex-none justify-center items-center inline-flex text-sm bg-white border border-gray-300 text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 hover:border-red-300 transition shadow-sm">
+                                        ✏️
                                     </a>
                                 </div>
                             </td>
