@@ -75,15 +75,15 @@
                     <tbody class="block md:table-row-group space-y-4 md:space-y-0 md:p-0">
                         {% for p in produkty %}
 
-                        <tr class="relative block md:table-row rounded-xl shadow-sm border border-gray-200 md:border-none md:shadow-none md:rounded-none group transition-all
+                        <tr class="relative block md:table-row rounded-xl shadow-sm border md:border-none md:shadow-none md:rounded-none group transition-all
                             {% if p.isFrozen %}
                                 /* ZAMROŻONE: Delikatne niebieskie paski */
-                                bg-cyan-50/50 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,0.6)_10px,rgba(255,255,255,0.6)_20px)]
+                                bg-cyan-50/50 border-cyan-200 md:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,0.6)_10px,rgba(255,255,255,0.6)_20px)]
                             {% elif p.ile_dni_waznosci < 0 %}
                                 /* PRZETERMINOWANE: Jasny czerwony + czerwone paski (ostrzeżenie) */
                                 bg-red-50 border-red-200 md:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(220,38,38,0.05)_10px,rgba(220,38,38,0.05)_20px)]
                             {% else %}
-                                md:hover:bg-gray-50 bg-white
+                                md:hover:bg-gray-50 bg-white border-gray-200
                             {% endif %}">
 
                             <td class="block md:table-cell p-4 pb-1 md:pb-4 md:border-b md:border-gray-100">
