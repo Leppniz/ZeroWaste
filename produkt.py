@@ -10,8 +10,8 @@ class Produkt(ABC):
         self._data_waznosci = None
         self._isFrozen = isFrozen
         self._frozenDays = 64
-
         self.data_waznosci = data_waznosci
+
 
     # ENKAPSULACJA (Gettery i Settery)
     @property
