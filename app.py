@@ -134,31 +134,35 @@ def zakupy():
     produkty = zakupy_katalog.getAll()
     return render_template('zakupy.html', produkty=produkty)
 
-@app.route('/dodaj-zakupy', methods=['GET', 'POST'])
+
+@app.route('/dodajzakupy', methods=['GET', 'POST'])
 def dodaj_zakupy():
     if request.method == 'POST':
         nazwa = request.form.get('nazwa')
+        jednostka = request.form.get('wybrana_jednostka')
+
         try:
             ilosc = float(request.form.get('ilosc'))
         except (ValueError, TypeError):
-            ilosc = 0
+            ilosc = 0.0
 
-        jednostka = request.form.get('jednostka')
+        # Tworzymy odpowiedni typ produktu
+        if jednostka == 'szt':
+            nowy_produkt = ProduktSztuki(nazwa, ilosc=ilosc)
+        else:
+            nowy_produkt = ProduktWaga(nazwa, ilosc=ilosc, jednostka=jednostka)
 
-        # Tworzymy produkt (używamy ProduktWaga dla wszystkich w zakupy, możesz zmienić)
-        nowy_produkt = ProduktWaga(nazwa, ilosc=ilosc, jednostka=jednostka)
+        # Dodajemy do katalogu zakupów
         zakupy_katalog.addProdukt(nowy_produkt)
 
         # Zapis do JSON
-        save_produkty_do_json("zakupy.json", zakupy_katalog)
+        save_produkty_do_json("zakupy.json", zakupy_katalog)  # Twoja funkcja zapisująca zakupy
 
-        flash(f"Dodano {nazwa} ({ilosc} {jednostka}) do listy zakupów!", "success")
+        flash(f"Dodano {ilosc} {jednostka} {nazwa} do listy zakupów.", "success")
         return redirect(url_for('zakupy'))
 
     # GET: wyświetlamy formularz
-    return render_template('dodaj_zakupy.html')
-
-
+    return render_template('dodajzakupy.html')
 
 
 @app.route('/usun/<id_produktu>')

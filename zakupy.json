@@ -1,92 +1,144 @@
 [
   {
+    "id": "29d7b48f",
     "nazwa": "Jajka",
-    "typ": "sztuki",
-    "ilosc": 12,
-    "jednostka": "szt",
     "data": "2026-01-15",
     "zamrozone": false,
-    "tags": ["śniadanie"]
+    "tags": [
+      "śniadanie"
+    ],
+    "typ": "waga",
+    "ilosc": 12,
+    "jednostka": "szt"
   },
   {
+    "id": "f38527af",
     "nazwa": "Mleko",
-    "typ": "waga",
-    "ilosc": 1.5,
-    "jednostka": "l",
     "data": "2026-01-10",
     "zamrozone": true,
-    "tags": ["nabiał"]
-  },
-  {
-    "nazwa": "Masło",
-    "typ": "waga",
-    "ilosc": 0.25,
-    "jednostka": "kg",
-    "data": "2026-01-12",
-    "zamrozone": false,
-    "tags": ["nabiał"]
-  },
-  {
-    "nazwa": "Chleb",
-    "typ": "sztuki",
-    "ilosc": 1,
-    "jednostka": "szt",
-    "data": "2026-01-18",
-    "zamrozone": false,
-    "tags": ["pieczywo"]
-  },
-  {
-    "nazwa": "Ser żółty",
-    "typ": "waga",
-    "ilosc": 0.5,
-    "jednostka": "kg",
-    "data": "2026-01-08",
-    "zamrozone": false,
-    "tags": ["nabiał", "przekąska"]
-  },
-  {
-    "nazwa": "Marchew",
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "kg",
-    "data": "2026-01-25",
-    "zamrozone": false,
-    "tags": ["warzywa"]
-  },
-  {
-    "nazwa": "Jabłka",
-    "typ": "waga",
-    "ilosc": 1.2,
-    "jednostka": "kg",
-    "data": "2026-01-20",
-    "zamrozone": false,
-    "tags": ["owoce"]
-  },
-  {
-    "nazwa": "Kurczak",
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "kg",
-    "data": "2025-12-31",
-    "zamrozone": true,
-    "tags": ["mięso"]
-  },
-  {
-    "nazwa": "Pomidory",
-    "typ": "waga",
-    "ilosc": 0.8,
-    "jednostka": "kg",
-    "data": "2026-01-16",
-    "zamrozone": false,
-    "tags": ["warzywa", "sałatka"]
-  },
-  {
-    "nazwa": "Banany",
+    "tags": [
+      "nabiał"
+    ],
     "typ": "waga",
     "ilosc": 1.5,
-    "jednostka": "kg",
+    "jednostka": "l"
+  },
+  {
+    "id": "dac11dcb",
+    "nazwa": "Masło",
+    "data": "2026-01-12",
+    "zamrozone": false,
+    "tags": [
+      "nabiał"
+    ],
+    "typ": "waga",
+    "ilosc": 0.25,
+    "jednostka": "kg"
+  },
+  {
+    "id": "2904f2c5",
+    "nazwa": "Chleb",
+    "data": "2026-01-18",
+    "zamrozone": false,
+    "tags": [
+      "pieczywo"
+    ],
+    "typ": "waga",
+    "ilosc": 1,
+    "jednostka": "szt"
+  },
+  {
+    "id": "cb65e2b5",
+    "nazwa": "Ser żółty",
+    "data": "2026-01-08",
+    "zamrozone": false,
+    "tags": [
+      "nabiał",
+      "przekąska"
+    ],
+    "typ": "waga",
+    "ilosc": 0.5,
+    "jednostka": "kg"
+  },
+  {
+    "id": "97fc3f65",
+    "nazwa": "Marchew",
+    "data": "2026-01-25",
+    "zamrozone": false,
+    "tags": [
+      "warzywa"
+    ],
+    "typ": "waga",
+    "ilosc": 1.0,
+    "jednostka": "kg"
+  },
+  {
+    "id": "5bbf7762",
+    "nazwa": "Jabłka",
+    "data": "2026-01-20",
+    "zamrozone": false,
+    "tags": [
+      "owoce"
+    ],
+    "typ": "waga",
+    "ilosc": 1.2,
+    "jednostka": "kg"
+  },
+  {
+    "id": "c4b68232",
+    "nazwa": "Kurczak",
+    "data": "2025-12-31",
+    "zamrozone": true,
+    "tags": [
+      "mięso"
+    ],
+    "typ": "waga",
+    "ilosc": 1.0,
+    "jednostka": "kg"
+  },
+  {
+    "id": "179d2c09",
+    "nazwa": "Pomidory",
+    "data": "2026-01-16",
+    "zamrozone": false,
+    "tags": [
+      "warzywa",
+      "sałatka"
+    ],
+    "typ": "waga",
+    "ilosc": 0.8,
+    "jednostka": "kg"
+  },
+  {
+    "id": "b1c381fb",
+    "nazwa": "Banany",
     "data": "2026-01-13",
     "zamrozone": false,
-    "tags": ["owoce"]
+    "tags": [
+      "owoce"
+    ],
+    "typ": "waga",
+    "ilosc": 1.5,
+    "jednostka": "kg"
+  },
+  {
+    "id": "8b1386c1",
+    "nazwa": "xd",
+    "data": null,
+    "zamrozone": false,
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 1.0,
+    "jednostka": "szt"
+  },
+  {
+    "id": "947128a4",
+    "nazwa": "afsafas",
+    "data": null,
+    "zamrozone": false,
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 1.0,
+    "jednostka": "szt"
   }
 ]
