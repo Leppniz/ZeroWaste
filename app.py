@@ -2,7 +2,7 @@ from itertools import count
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 
-from jsonLoader import load_produkty_z_json
+from jsonLoader import load_produkty_z_json, save_produkty_do_json
 from katalog import Katalog
 from produkt import ProduktSztuki, ProduktWaga
 from settings import DAYS_TO_WARNING
@@ -52,24 +52,25 @@ def tagi():
 def dodaj_tag():
     produkt_id = request.form.get("produkt_id")
     tag = request.form.get("tag", "").strip()
-
     produkt = moj_katalog.getProduktById(produkt_id)
 
     if produkt and tag:
         produkt.add_tag(tag)
+        save_produkty_do_json("produkty.json", moj_katalog)  # ✅ persist
         flash(f"Dodano tag: #{tag}", "success")
 
     return redirect(request.referrer or url_for("lista_produktow"))
+
 
 @app.route("/usun-tag", methods=["POST"])
 def usun_tag():
     produkt_id = request.form.get("produkt_id")
     tag = request.form.get("tag")
-
     produkt = moj_katalog.getProduktById(produkt_id)
 
     if produkt and tag:
         produkt.remove_tag(tag)
+        save_produkty_do_json("produkty.json", moj_katalog)  # ✅ persist
         flash(f"Usunięto tag: #{tag}", "info")
 
     return redirect(request.referrer or url_for("lista_produktow"))

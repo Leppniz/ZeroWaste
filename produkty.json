@@ -1,19 +1,126 @@
 [
   {
-    "typ": "sztuki",
+    "id": "260a9d08",
     "nazwa": "Jajka",
-    "data": "2026-02-01",
-    "ilosc": 10,
+    "data": "2026-02-10",
     "zamrozone": false,
-    "tags": ["śniadanie", "białko"]
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 10,
+    "jednostka": "szt"
   },
   {
-    "typ": "waga",
+    "id": "659554f8",
     "nazwa": "Mleko",
-    "data": "2026-01-15",
+    "data": "2026-01-25",
+    "zamrozone": false,
+    "tags": [
+      "nabiał"
+    ],
+    "typ": "waga",
     "ilosc": 1.5,
-    "jednostka": "l",
+    "jednostka": "l"
+  },
+  {
+    "id": "3d7bbd78",
+    "nazwa": "Masło",
+    "data": "2026-03-01",
+    "zamrozone": false,
+    "tags": [
+      "nabiał",
+      "tłuszcz"
+    ],
+    "typ": "waga",
+    "ilosc": 200,
+    "jednostka": "g"
+  },
+  {
+    "id": "84e73328",
+    "nazwa": "Jogurt naturalny",
+    "data": "2026-01-22",
+    "zamrozone": false,
+    "tags": [
+      "nabiał",
+      "fit"
+    ],
+    "typ": "waga",
+    "ilosc": 3,
+    "jednostka": "szt"
+  },
+  {
+    "id": "004ec0b6",
+    "nazwa": "Pierś z kurczaka",
+    "data": "2026-01-20",
     "zamrozone": true,
-    "tags": ["nabiał"]
+    "tags": [
+      "mięso",
+      "obiad"
+    ],
+    "typ": "waga",
+    "ilosc": 0.8,
+    "jednostka": "kg"
+  },
+  {
+    "id": "86faf87f",
+    "nazwa": "Ser żółty",
+    "data": "2026-02-28",
+    "zamrozone": false,
+    "tags": [
+      "nabiał"
+    ],
+    "typ": "waga",
+    "ilosc": 300,
+    "jednostka": "g"
+  },
+  {
+    "id": "9dcb69d6",
+    "nazwa": "Szynka",
+    "data": "2026-01-18",
+    "zamrozone": false,
+    "tags": [
+      "wędlina",
+      "kanapki"
+    ],
+    "typ": "waga",
+    "ilosc": 150,
+    "jednostka": "g"
+  },
+  {
+    "id": "56a751a4",
+    "nazwa": "Mrożone truskawki",
+    "data": "2026-01-05",
+    "zamrozone": true,
+    "tags": [
+      "owoce",
+      "deser"
+    ],
+    "typ": "waga",
+    "ilosc": 0.5,
+    "jednostka": "kg"
+  },
+  {
+    "id": "0b635102",
+    "nazwa": "Papryka",
+    "data": "2026-01-19",
+    "zamrozone": false,
+    "tags": [
+      "warzywa"
+    ],
+    "typ": "waga",
+    "ilosc": 2,
+    "jednostka": "szt"
+  },
+  {
+    "id": "d3f7f277",
+    "nazwa": "Jogurt skyr",
+    "data": "2026-01-30",
+    "zamrozone": false,
+    "tags": [
+      "nabiał",
+      "białko"
+    ],
+    "typ": "waga",
+    "ilosc": 400,
+    "jednostka": "g"
   }
 ]
