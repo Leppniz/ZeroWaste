@@ -75,7 +75,24 @@ def usun_tag():
 
     return redirect(request.referrer or url_for("lista_produktow"))
 
+@app.route('/mrozenie')
+def mrozenie():
+    # Pobieramy wszystkie produkty z katalogu
+    produkty = moj_katalog.getAll()
+    return render_template('mrozenie.html', produkty=produkty)
 
+@app.route('/toggle-freeze', methods=['POST'])
+def toggle_freeze():
+    produkt_id = request.form.get('produkt_id')
+    produkt = moj_katalog.getProduktById(produkt_id)
+
+    if produkt:
+        produkt.isFrozen = not produkt.isFrozen  # przełączamy stan zamrożenia
+        flash(f"{produkt.name} został {'zamrożony ❄️' if produkt.isFrozen else 'odmrożony'}", "success")
+
+        # Opcjonalnie: jeśli chcesz, możesz tu też zapisać do JSON, żeby zmiany były trwałe
+
+    return redirect(request.referrer or url_for('mrozenie'))
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
 def zuzyj_produkt_strona(id_produktu):
     # 1. Szukamy produktu

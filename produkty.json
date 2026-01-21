@@ -1,126 +1,92 @@
 [
   {
-    "id": "260a9d08",
     "nazwa": "Jajka",
-    "data": "2026-02-10",
+    "typ": "sztuki",
+    "ilosc": 12,
+    "jednostka": "szt",
+    "data": "2026-01-15",
     "zamrozone": false,
-    "tags": [],
-    "typ": "waga",
-    "ilosc": 10,
-    "jednostka": "szt"
+    "tags": ["śniadanie"]
   },
   {
-    "id": "659554f8",
     "nazwa": "Mleko",
-    "data": "2026-01-25",
-    "zamrozone": false,
-    "tags": [
-      "nabiał"
-    ],
     "typ": "waga",
     "ilosc": 1.5,
-    "jednostka": "l"
-  },
-  {
-    "id": "3d7bbd78",
-    "nazwa": "Masło",
-    "data": "2026-03-01",
-    "zamrozone": false,
-    "tags": [
-      "nabiał",
-      "tłuszcz"
-    ],
-    "typ": "waga",
-    "ilosc": 200,
-    "jednostka": "g"
-  },
-  {
-    "id": "84e73328",
-    "nazwa": "Jogurt naturalny",
-    "data": "2026-01-22",
-    "zamrozone": false,
-    "tags": [
-      "nabiał",
-      "fit"
-    ],
-    "typ": "waga",
-    "ilosc": 3,
-    "jednostka": "szt"
-  },
-  {
-    "id": "004ec0b6",
-    "nazwa": "Pierś z kurczaka",
-    "data": "2026-01-20",
+    "jednostka": "l",
+    "data": "2026-01-10",
     "zamrozone": true,
-    "tags": [
-      "mięso",
-      "obiad"
-    ],
-    "typ": "waga",
-    "ilosc": 0.8,
-    "jednostka": "kg"
+    "tags": ["nabiał"]
   },
   {
-    "id": "86faf87f",
-    "nazwa": "Ser żółty",
-    "data": "2026-02-28",
+    "nazwa": "Masło",
+    "typ": "waga",
+    "ilosc": 0.25,
+    "jednostka": "kg",
+    "data": "2026-01-12",
     "zamrozone": false,
-    "tags": [
-      "nabiał"
-    ],
-    "typ": "waga",
-    "ilosc": 300,
-    "jednostka": "g"
+    "tags": ["nabiał"]
   },
   {
-    "id": "9dcb69d6",
-    "nazwa": "Szynka",
+    "nazwa": "Chleb",
+    "typ": "sztuki",
+    "ilosc": 1,
+    "jednostka": "szt",
     "data": "2026-01-18",
     "zamrozone": false,
-    "tags": [
-      "wędlina",
-      "kanapki"
-    ],
-    "typ": "waga",
-    "ilosc": 150,
-    "jednostka": "g"
+    "tags": ["pieczywo"]
   },
   {
-    "id": "56a751a4",
-    "nazwa": "Mrożone truskawki",
-    "data": "2026-01-05",
-    "zamrozone": true,
-    "tags": [
-      "owoce",
-      "deser"
-    ],
+    "nazwa": "Ser żółty",
     "typ": "waga",
     "ilosc": 0.5,
-    "jednostka": "kg"
+    "jednostka": "kg",
+    "data": "2026-01-08",
+    "zamrozone": false,
+    "tags": ["nabiał", "przekąska"]
   },
   {
-    "id": "0b635102",
-    "nazwa": "Papryka",
-    "data": "2026-01-19",
-    "zamrozone": false,
-    "tags": [
-      "warzywa"
-    ],
+    "nazwa": "Marchew",
     "typ": "waga",
-    "ilosc": 2,
-    "jednostka": "szt"
+    "ilosc": 1.0,
+    "jednostka": "kg",
+    "data": "2026-01-25",
+    "zamrozone": false,
+    "tags": ["warzywa"]
   },
   {
-    "id": "d3f7f277",
-    "nazwa": "Jogurt skyr",
-    "data": "2026-01-30",
-    "zamrozone": false,
-    "tags": [
-      "nabiał",
-      "białko"
-    ],
+    "nazwa": "Jabłka",
     "typ": "waga",
-    "ilosc": 400,
-    "jednostka": "g"
+    "ilosc": 1.2,
+    "jednostka": "kg",
+    "data": "2026-01-20",
+    "zamrozone": false,
+    "tags": ["owoce"]
+  },
+  {
+    "nazwa": "Kurczak",
+    "typ": "waga",
+    "ilosc": 1.0,
+    "jednostka": "kg",
+    "data": "2025-12-31",
+    "zamrozone": true,
+    "tags": ["mięso"]
+  },
+  {
+    "nazwa": "Pomidory",
+    "typ": "waga",
+    "ilosc": 0.8,
+    "jednostka": "kg",
+    "data": "2026-01-16",
+    "zamrozone": false,
+    "tags": ["warzywa", "sałatka"]
+  },
+  {
+    "nazwa": "Banany",
+    "typ": "waga",
+    "ilosc": 1.5,
+    "jednostka": "kg",
+    "data": "2026-01-13",
+    "zamrozone": false,
+    "tags": ["owoce"]
   }
 ]

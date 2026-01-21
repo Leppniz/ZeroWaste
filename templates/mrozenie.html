@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<h2 class="text-2xl font-bold text-gray-800 mb-6">Mrożenie produktów</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for produkt in produkty %}
+    <div class="bg-white rounded-lg shadow-md p-4 flex flex-col justify-between">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800">{{ produkt.name }}</h3>
+            <p class="text-gray-500 text-sm">
+                {% if produkt.ilosc %}{{ produkt.ilosc }} {{ produkt.jednostka }}{% endif %}
+            </p>
+            <p class="text-gray-500 text-xs mt-1">
+                Ważność:
+                {% if produkt.ile_dni_waznosci is not none %}
+                    {{ produkt.data_waznosci }} ({{ produkt.ile_dni_waznosci }} dni)
+                {% else %}
+                    Brak daty
+                {% endif %}
+            </p>
+            {% if produkt.isFrozen %}
+            <span class="inline-block mt-2 px-2 py-0.5 bg-cyan-100 text-cyan-700 text-xs rounded">Zamrożone ❄️</span>
+            {% endif %}
+        </div>
+
+        <div class="mt-4 flex justify-between items-center">
+            <!-- Checkbox form to freeze/unfreeze -->
+            <form action="{{ url_for('toggle_freeze') }}" method="POST" class="flex-1">
+                <input type="hidden" name="produkt_id" value="{{ produkt.id }}">
+                <button type="submit"
+                        class="w-full bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition">
+                    {% if produkt.isFrozen %}Odmróź{% else %}Zamróź{% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
