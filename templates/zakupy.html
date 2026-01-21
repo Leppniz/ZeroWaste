@@ -3,18 +3,27 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">Lista zakupów</h1>
-    <<a href="{{ url_for('dodaj_zakupy') }}"
-   class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 shadow transition">
-   + Dodaj do zakupów
-</a>
-
+    <a href="{{ url_for('dodaj_zakupy') }}"
+       class="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 shadow transition">
+       + Dodaj do zakupów
+    </a>
 </div>
 
 <ul class="space-y-2">
   {% for p in produkty %}
   <li class="flex justify-between items-center bg-white shadow rounded px-4 py-2 hover:bg-green-50 transition">
     <span class="font-medium">{{ p.name }}</span>
-    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">{{ p.ilosc }} {{ p.jednostka }}</span>
+    <div class="flex items-center gap-2">
+      <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">{{ p.ilosc }} {{ p.jednostka }}</span>
+
+      <!-- X Button to remove product -->
+      <form action="{{ url_for('usun_zakupy') }}" method="post" class="inline">
+          <input type="hidden" name="produkt_id" value="{{ p.id }}">
+          <button type="submit" class="text-red-600 hover:text-red-800 font-bold px-2 py-1 rounded transition">
+              ✖
+          </button>
+      </form>
+    </div>
   </li>
   {% endfor %}
 </ul>

@@ -163,6 +163,17 @@ def dodaj_zakupy():
 
     # GET: wyświetlamy formularz
     return render_template('dodajzakupy.html')
+@app.route("/usunzakupy", methods=["POST"])
+def usun_zakupy():
+    produkt_id = request.form.get("produkt_id")
+    produkt = zakupy_katalog.getProduktById(produkt_id)
+
+    if produkt:
+        zakupy_katalog.removeProduktById(produkt_id)
+        save_produkty_do_json("zakupy.json", zakupy_katalog)
+        flash(f"Usunięto {produkt.name} z listy zakupów.", "info")
+
+    return redirect(url_for("zakupy"))
 
 
 @app.route('/usun/<id_produktu>')
