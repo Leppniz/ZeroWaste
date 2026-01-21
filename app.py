@@ -14,10 +14,11 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = 'TAJNY_KLUCZ'
 
-# Tworzymy JEDEN wspólny katalog dla całej aplikacji
 moj_katalog = Katalog()
+zakupy_katalog = Katalog()
 
 load_produkty_z_json("produkty.json", moj_katalog)
+load_produkty_z_json("zakupy.json", zakupy_katalog)
 
 
 # ======= SCIEŻKI DO STRON =========
@@ -75,6 +76,7 @@ def usun_tag():
 
     return redirect(request.referrer or url_for("lista_produktow"))
 
+#======= MROZENIE =========
 @app.route('/mrozenie')
 def mrozenie():
     # Pobieramy wszystkie produkty z katalogu
@@ -124,6 +126,40 @@ def zuzyj_produkt_strona(id_produktu):
 
     # === GET: Ktoś wszedł na stronę ===
     return render_template('zuzyj.html', p=produkt)
+
+#======= Zakupy =========
+@app.route('/zakupy')
+def zakupy():
+    # Pobieramy listę produktów z katalogu zakupów
+    produkty = zakupy_katalog.getAll()
+    return render_template('zakupy.html', produkty=produkty)
+
+@app.route('/dodaj-zakupy', methods=['GET', 'POST'])
+def dodaj_zakupy():
+    if request.method == 'POST':
+        nazwa = request.form.get('nazwa')
+        try:
+            ilosc = float(request.form.get('ilosc'))
+        except (ValueError, TypeError):
+            ilosc = 0
+
+        jednostka = request.form.get('jednostka')
+
+        # Tworzymy produkt (używamy ProduktWaga dla wszystkich w zakupy, możesz zmienić)
+        nowy_produkt = ProduktWaga(nazwa, ilosc=ilosc, jednostka=jednostka)
+        zakupy_katalog.addProdukt(nowy_produkt)
+
+        # Zapis do JSON
+        save_produkty_do_json("zakupy.json", zakupy_katalog)
+
+        flash(f"Dodano {nazwa} ({ilosc} {jednostka}) do listy zakupów!", "success")
+        return redirect(url_for('zakupy'))
+
+    # GET: wyświetlamy formularz
+    return render_template('dodaj_zakupy.html')
+
+
+
 
 @app.route('/usun/<id_produktu>')
 def usun_produkt(id_produktu):
