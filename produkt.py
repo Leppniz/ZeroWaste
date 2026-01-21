@@ -34,7 +34,9 @@ class Produkt(ABC):
     def has_tag(self, tag: str) -> bool:
         return tag.strip().lower() in self._tags
 
-
+    def remove_tag(self, tag):
+        if tag in self.tags:
+            self.tags.remove(tag)
 
     # ENKAPSULACJA (Gettery i Settery)
     @property

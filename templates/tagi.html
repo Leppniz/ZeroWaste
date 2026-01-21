@@ -21,7 +21,6 @@
                 <thead>
                     <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                         <th class="p-4 font-semibold">Produkt</th>
-                        <th class="p-4 font-semibold">Ilość</th>
                         <th class="p-4 font-semibold">Tagi</th>
                         <th class="p-4 font-semibold text-right">Akcje</th>
                     </tr>
@@ -37,22 +36,27 @@
                             {% endif %}
                         </td>
 
-                        <td class="p-4 text-gray-600">
-                            <span class="font-bold text-gray-800">{{ p.ilosc }}</span> {{ p.jednostka }}
-                        </td>
                         <td class="p-4">
-                             {% if p.tags %}
-                                <div class="flex flex-wrap gap-1 justify-end">
-                                    {% for tag in p.tags %}
-                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                                            #{{ tag }}
-                                        </span>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <span class="text-gray-400 text-sm">—</span>
-                            {% endif %}
-                        </td>
+    <div class="flex flex-wrap gap-2">
+        {% for tag in p.tags %}
+        <form action="{{ url_for('usun_tag') }}"
+              method="post"
+              class="inline-flex items-center bg-green-100 text-green-800 text-xs rounded px-2 py-1 gap-1">
+
+            <span>#{{ tag }}</span>
+
+            <input type="hidden" name="produkt_id" value="{{ p.id }}">
+            <input type="hidden" name="tag" value="{{ tag }}">
+
+            <button type="submit"
+                    class="ml-1 text-green-700 hover:text-red-600 font-bold leading-none">
+                ×
+            </button>
+        </form>
+        {% endfor %}
+    </div>
+</td>
+
 
 
 
