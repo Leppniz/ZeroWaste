@@ -1,0 +1,19 @@
+[
+  {
+    "typ": "sztuki",
+    "nazwa": "Jajka",
+    "data": "2026-02-01",
+    "ilosc": 10,
+    "zamrozone": false,
+    "tags": ["śniadanie", "białko"]
+  },
+  {
+    "typ": "waga",
+    "nazwa": "Mleko",
+    "data": "2026-01-15",
+    "ilosc": 1.5,
+    "jednostka": "l",
+    "zamrozone": true,
+    "tags": ["nabiał"]
+  }
+]

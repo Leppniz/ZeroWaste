@@ -1,9 +1,12 @@
 from itertools import count
 
 from flask import Flask, render_template, request, redirect, url_for, flash
+
+from jsonLoader import load_produkty_z_json
 from katalog import Katalog
 from produkt import ProduktSztuki, ProduktWaga
 from settings import DAYS_TO_WARNING
+
 
 app = Flask(__name__)
 
@@ -14,11 +17,7 @@ app.config['SECRET_KEY'] = 'TAJNY_KLUCZ'
 # Tworzymy JEDEN wspólny katalog dla całej aplikacji
 moj_katalog = Katalog()
 
-# Dodajemy dane startowe, żeby nie było pusto na start
-jajka = ProduktSztuki("Jajka", "2026-02-1", 10)
-mleko = ProduktWaga("Mleko", "2026-01-15", 1.5, "l", True)
-moj_katalog.addProdukt(jajka)
-moj_katalog.addProdukt(mleko)
+load_produkty_z_json("produkty.json", moj_katalog)
 
 
 # ======= SCIEŻKI DO STRON =========
