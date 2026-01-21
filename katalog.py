@@ -60,3 +60,6 @@ class Katalog:
             if p.isFrozen == True:
                 licznik += 1
         return licznik
+
+    def get_produkty_by_tag(self, tag: str):
+        return [p for p in self._produkty if p.has_tag(tag)]

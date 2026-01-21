@@ -41,12 +41,40 @@ def lista_produktow():
     # Przekazanie do HTML'a
     return render_template('lista.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
 
+
+#======= TAGS =========
 @app.route('/tagi')
 def tagi():
     # Pobieramy listę obiektów z Katalog
     lista = moj_katalog.getAll()
     # Przekazanie do HTML'a
     return render_template('tagi.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
+@app.route("/dodaj-tag", methods=["POST"])
+def dodaj_tag():
+    produkt_id = request.form.get("produkt_id")
+    tag = request.form.get("tag", "").strip()
+
+    produkt = moj_katalog.getProduktById(produkt_id)
+
+    if produkt and tag:
+        produkt.add_tag(tag)
+        flash(f"Dodano tag: #{tag}", "success")
+
+    return redirect(request.referrer or url_for("lista_produktow"))
+
+@app.route("/usun-tag", methods=["POST"])
+def usun_tag():
+    produkt_id = request.form.get("produkt_id")
+    tag = request.form.get("tag")
+
+    produkt = moj_katalog.getProduktById(produkt_id)
+
+    if produkt and tag:
+        produkt.remove_tag(tag)
+        flash(f"Usunięto tag: #{tag}", "info")
+
+    return redirect(request.referrer or url_for("lista_produktow"))
+
 
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
 def zuzyj_produkt_strona(id_produktu):

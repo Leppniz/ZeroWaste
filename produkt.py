@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
+from typing import List
 import uuid
 
 # Abstrakcja - robi taki szablon ze wszystko co korzysta z tego ma te dane
@@ -10,7 +11,29 @@ class Produkt(ABC):
         self._data_waznosci = None
         self._isFrozen = isFrozen
         self._frozenDays = 64
+
+        self._tags: List[str] = []   # 👈 ADD THIS
+
         self.data_waznosci = data_waznosci
+
+    # ===== TAGI =====
+    @property
+    def tags(self) -> List[str]:
+        return self._tags
+
+    def add_tag(self, tag: str):
+        tag = tag.strip().lower()
+        if tag and tag not in self._tags:
+            self._tags.append(tag)
+
+    def remove_tag(self, tag: str):
+        tag = tag.strip().lower()
+        if tag in self._tags:
+            self._tags.remove(tag)
+
+    def has_tag(self, tag: str) -> bool:
+        return tag.strip().lower() in self._tags
+
 
 
     # ENKAPSULACJA (Gettery i Settery)
