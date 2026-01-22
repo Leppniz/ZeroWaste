@@ -143,7 +143,7 @@ def dodaj_produkt():
 
         # 2. Tworzymy obiekt (OOP)
         if jednostka == 'szt':
-            nowy_produkt = ProduktSztuki(nazwa, data, int(ilosc))
+            nowy_produkt = ProduktSztuki(nazwa, data, float(ilosc))
         else:
             nowy_produkt = ProduktWaga(nazwa, data, ilosc, jednostka)
 
