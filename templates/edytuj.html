@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md border border-gray-100 mt-10">
+
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Edytuj produkt</h2>
+        <span class="text-sm text-gray-400 font-mono">ID: {{ p.id }}</span>
+    </div>
+
+    <form action="{{ url_for('edytuj_produkt', id_produktu=p.id) }}" method="post" class="space-y-5">
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nazwa produktu</label>
+            <input type="text" name="nazwa" value="{{ p.name }}" required
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition shadow-sm placeholder-gray-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Ilość</label>
+                <input type="number" step="0.01" name="ilosc" value="{{ p.ilosc }}" required
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition shadow-sm">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Jednostka</label>
+                <select name="jednostka" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition shadow-sm bg-white">
+                    <option value="szt" {% if p.jednostka == 'szt' %}selected{% endif %}>szt</option>
+                    <option value="kg" {% if p.jednostka == 'kg' %}selected{% endif %}>kg</option>
+                    <option value="g" {% if p.jednostka == 'g' %}selected{% endif %}>g</option>
+                    <option value="l" {% if p.jednostka == 'l' %}selected{% endif %}>l</option>
+                    <option value="ml" {% if p.jednostka == 'ml' %}selected{% endif %}>ml</option>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data ważności</label>
+            <input type="date" name="data" value="{{ p.data_waznosci }}"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none transition shadow-sm font-mono text-gray-700">
+        </div>
+
+        <div class="flex items-center bg-cyan-50 p-3 rounded-lg border border-cyan-100">
+            <input type="checkbox" name="czy_zamrozone" id="frozenCheck"
+                   class="h-5 w-5 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+                   {% if p.isFrozen %}checked{% endif %}>
+            <label for="frozenCheck" class="ml-2 block text-sm text-gray-700 font-medium cursor-pointer">
+                Produkt jest zamrożony ❄️
+            </label>
+        </div>
+
+        <div class="pt-4 flex flex-col gap-3">
+            <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition shadow-md flex justify-center items-center gap-2">
+                💾 Zapisz zmiany
+            </button>
+
+            <a href="{{ url_for('lista_produktow') }}" class="w-full block text-center py-3 text-gray-500 bg-gray-50 rounded-lg hover:bg-gray-100 hover:text-gray-700 transition border border-gray-200">
+                Anuluj
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

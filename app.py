@@ -1,5 +1,3 @@
-from itertools import count
-
 from flask import Flask, render_template, request, redirect, url_for, flash
 from katalog import Katalog
 from produkt import ProduktSztuki, ProduktWaga
@@ -7,7 +5,7 @@ from settings import DAYS_TO_WARNING
 
 app = Flask(__name__)
 
-# Config - zeby widziec zmiany od razu
+# Config-żeby widzieć zmiany od razu
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SECRET_KEY'] = 'TAJNY_KLUCZ'
 
@@ -21,7 +19,7 @@ moj_katalog.addProdukt(jajka)
 moj_katalog.addProdukt(mleko)
 
 
-# ======= SCIEŻKI DO STRON =========
+# ======= ŚCIEŻKI DO STRON =========
 @app.route('/')
 def strona_glowna():
 
@@ -81,9 +79,46 @@ def zuzyj_produkt_strona(id_produktu):
     # === GET: Ktoś wszedł na stronę ===
     return render_template('zuzyj.html', p=produkt)
 
+
+@app.route('/edytuj/<id_produktu>', methods=['GET', 'POST'])
+def edytuj_produkt(id_produktu):
+    produkt = moj_katalog.getProduktById(id_produktu)
+
+    if not produkt:
+        flash("Nie znaleziono takiego produktu!", "error")
+        return redirect(url_for('lista_produktow'))
+
+    # === POST: Zapisujemy zmiany ===
+    if request.method == 'POST':
+        nowa_nazwa = request.form.get('nazwa')
+        nowa_ilosc = request.form.get('ilosc')
+        nowa_jednostka = request.form.get('jednostka')
+        nowa_data = request.form.get('data')
+        jest_mrozone = request.form.get('czy_zamrozone') is not None
+
+        produkt.name = nowa_nazwa
+
+        try:
+            if hasattr(produkt, 'jednostka'):
+                try:
+                    produkt.jednostka = nowa_jednostka
+                except:
+                    pass
+
+            produkt.ilosc = float(nowa_ilosc)
+        except ValueError:
+            pass
+
+        produkt.isFrozen = jest_mrozone
+        produkt.data_waznosci = nowa_data
+
+        flash(f"Zaktualizowano produkt: {produkt.name}", "success")
+        return redirect(url_for('lista_produktow'))
+
+    return render_template('edytuj.html', p=produkt)
+
 @app.route('/usun/<id_produktu>')
 def usun_produkt(id_produktu):
-    # Używamy Twojej metody z Katalogu
     moj_katalog.removeProduktById(id_produktu)
     return redirect(request.referrer or url_for('strona_glowna'))
 
@@ -102,8 +137,8 @@ def dodaj_produkt():
 
         jednostka = request.form.get('wybrana_jednostka')
 
-        # 1. Sprawdzamy czy użytkownik zaznaczył "Zamrożone"
-        # Checkbox zwraca 'on' jeśli zaznaczony, albo None jeśli nie
+        # 1. Sprawdzamy, czy użytkownik zaznaczył "Zamrożone"
+        # Checkbox zwraca 'on' jeśli zaznaczony, albo None, jeśli nie
         jest_mrozone = request.form.get('czy_zamrozone') is not None
 
         # 2. Tworzymy obiekt (OOP)
@@ -118,12 +153,12 @@ def dodaj_produkt():
         # 3. Dodajemy do katalogu
         moj_katalog.addProdukt(nowy_produkt)
 
-        # 4. Sprawdzamy czy user chce dodać kolejny, czy wyjść
+        # 4. Sprawdzamy, czy user chce dodać kolejny, czy wyjść
         chce_kolejny = request.form.get('dodaj_kolejny')
 
         if chce_kolejny:
             # Jeśli zaznaczył "Dodaj kolejny", wyświetlamy komunikat i zostajemy tu
-            flash(f"Dodano produkt: {nazwa}. Możesz dodać następny.")
+            flash(f"Dodano produkt: {nazwa}. Możesz dodać następny.", "success")
             return redirect(url_for('dodaj_produkt'))
         else:
             # Standardowo wracamy na listę
