@@ -21,7 +21,6 @@ load_produkty_z_json("produkty.json", moj_katalog)
 load_produkty_z_json("zakupy.json", zakupy_katalog)
 
 
-# ======= SCIEŻKI DO STRON =========
 @app.route('/')
 def strona_glowna():
 
@@ -34,6 +33,7 @@ def strona_glowna():
 
     return render_template('dashboard.html', **context)
 
+#================================== LISTA ====================================
 @app.route('/lista')
 def lista_produktow():
     # Pobieramy listę obiektów z Katalog
@@ -42,7 +42,7 @@ def lista_produktow():
     return render_template('lista.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
 
 
-#======= TAGS =========
+#================================== TAGI ====================================
 @app.route('/tagi')
 def tagi():
     # Pobieramy listę obiektów z Katalog
@@ -76,7 +76,7 @@ def usun_tag():
 
     return redirect(request.referrer or url_for("lista_produktow"))
 
-#======= MROZENIE =========
+#================================== MROZENIE ====================================
 @app.route('/mrozenie')
 def mrozenie():
     # Pobieramy wszystkie produkty z katalogu
@@ -127,7 +127,7 @@ def zuzyj_produkt_strona(id_produktu):
     # === GET: Ktoś wszedł na stronę ===
     return render_template('zuzyj.html', p=produkt)
 
-#======= Zakupy =========
+#================================== ZAKUPY ====================================
 @app.route('/zakupy')
 def zakupy():
     # Pobieramy listę produktów z katalogu zakupów
@@ -174,6 +174,19 @@ def usun_zakupy():
         flash(f"Usunięto {produkt.name} z listy zakupów.", "info")
 
     return redirect(url_for("zakupy"))
+
+
+#================================== WYSZUKIWARKA ====================================
+@app.route("/wyszukiwarka", methods=["GET"])
+def wyszukiwarka():
+    query = request.args.get("q", "").strip().lower()
+    produkty = []
+
+    if query:
+        # Szukamy w głównym katalogu
+        produkty = [p for p in moj_katalog.getAll() if query in p.name.lower()]
+
+    return render_template("wyszukiwarka.html", produkty=produkty)
 
 
 @app.route('/usun/<id_produktu>')

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+
+    <h1 class="text-2xl font-bold mb-6">Wyszukiwarka produktów</h1>
+
+    <!-- Search form -->
+    <form action="{{ url_for('wyszukiwarka') }}" method="get" class="flex gap-2 mb-6">
+        <input type="text" name="q" placeholder="Wpisz nazwę produktu..."
+               value="{{ request.args.get('q', '') }}"
+               class="flex-1 rounded-md border border-gray-300 p-3 focus:border-green-500 outline-none transition">
+        <button type="submit"
+                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+            Szukaj
+        </button>
+    </form>
+
+    <!-- Results -->
+    {% if produkty is defined %}
+        {% if produkty %}
+            <ul class="space-y-2">
+                {% for p in produkty %}
+                <li class="flex justify-between items-center bg-white shadow rounded px-4 py-2 hover:bg-green-50 transition">
+                    <span class="font-medium">{{ p.name }}</span>
+                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">{{ p.ilosc }} {{ p.jednostka }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">Nie znaleziono produktów pasujących do wyszukiwania.</p>
+        {% endif %}
+    {% endif %}
+
+</div>
+{% endblock %}
