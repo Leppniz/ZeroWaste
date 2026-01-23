@@ -85,34 +85,56 @@ def edytuj_produkt(id_produktu):
     produkt = moj_katalog.getProduktById(id_produktu)
 
     if not produkt:
-        flash("Nie znaleziono takiego produktu!", "error")
+        flash("Nie znaleziono produktu!", "error")
         return redirect(url_for('lista_produktow'))
 
-    # === POST: Zapisujemy zmiany ===
     if request.method == 'POST':
+        # 1. Pobieramy dane
         nowa_nazwa = request.form.get('nazwa')
-        nowa_ilosc = request.form.get('ilosc')
+        nowa_ilosc = float(request.form.get('ilosc'))  # Tu już float jest ok
         nowa_jednostka = request.form.get('jednostka')
         nowa_data = request.form.get('data')
         jest_mrozone = request.form.get('czy_zamrozone') is not None
 
-        produkt.name = nowa_nazwa
+        # 2. SPRAWDZAMY CZY ZMIENIA SIĘ TYP (Sztuki <-> Waga)
+        # Pobieramy starą jednostkę (bezpiecznie)
+        stara_jednostka = getattr(produkt, 'jednostka', 'szt')
 
-        try:
-            if hasattr(produkt, 'jednostka'):
-                try:
-                    produkt.jednostka = nowa_jednostka
-                except:
-                    pass
+        # Czy zmieniamy "Sztuki -> Waga" ALBO "Waga -> Sztuki"?
+        czy_byl_sztuki = (stara_jednostka == 'szt')
+        czy_ma_byc_sztuki = (nowa_jednostka == 'szt')
 
-            produkt.ilosc = float(nowa_ilosc)
-        except ValueError:
-            pass
+        if czy_byl_sztuki != czy_ma_byc_sztuki:
+            # === REINKARNACJA: TWORZYMY NOWY OBIEKT ===
+            if czy_ma_byc_sztuki:
+                # Zamiana na sztuki (int)
+                nowy_produkt = ProduktSztuki(nowa_nazwa, nowa_data, nowa_ilosc)
+            else:
+                # Zamiana na wagę/objętość (kg, l, ml...)
+                nowy_produkt = ProduktWaga(nowa_nazwa, nowa_data, nowa_ilosc, nowa_jednostka)
 
-        produkt.isFrozen = jest_mrozone
-        produkt.data_waznosci = nowa_data
+            # KLUCZOWE: Przepisujemy STARE ID i status mrożenia
+            nowy_produkt.id = produkt.id
+            nowy_produkt.isFrozen = jest_mrozone
 
-        flash(f"Zaktualizowano produkt: {produkt.name}", "success")
+            # Podmieniamy w katalogu
+            moj_katalog.podmienProdukt(produkt.id, nowy_produkt)
+
+            flash(f"Zmieniono typ produktu na {nowa_jednostka}!", "success")
+
+        else:
+            # === ZWYKŁA EDYCJA (Ten sam typ) ===
+            produkt.name = nowa_nazwa
+            produkt.ilosc = nowa_ilosc
+            produkt.data_waznosci = nowa_data
+            produkt.isFrozen = jest_mrozone
+
+            # Tylko jeśli to nie są sztuki, aktualizujemy jednostkę
+            if not czy_byl_sztuki:
+                produkt.jednostka = nowa_jednostka
+
+            flash(f"Zaktualizowano produkt: {produkt.name}", "success")
+
         return redirect(url_for('lista_produktow'))
 
     return render_template('edytuj.html', p=produkt)

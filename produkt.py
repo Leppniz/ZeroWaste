@@ -18,6 +18,10 @@ class Produkt(ABC):
     def id(self):
         return self._id
 
+    @id.setter
+    def id(self, nowe_id):
+        self._id = nowe_id
+
     @property
     def isFrozen(self):
         return self._isFrozen

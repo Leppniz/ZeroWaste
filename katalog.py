@@ -77,3 +77,12 @@ class Katalog:
             if p.isFrozen == True:
                 licznik += 1
         return licznik
+
+    def podmienProdukt(self, id_produktu, nowy_obiekt):
+        # Szukamy, na którym miejscu w liście (index) leży stary produkt
+        for i, p in enumerate(self._produkty):  # lub self.produkty zależnie jak nazwałeś listę
+            if p.id == id_produktu:
+                # Znaleziono! Podmieniamy stary na nowy
+                self._produkty[i] = nowy_obiekt
+                return True
+        return False
