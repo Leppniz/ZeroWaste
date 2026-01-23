@@ -47,36 +47,27 @@ def lista_produktow():
 
     return render_template('lista.html', produkty=produkty_data, tryb=tryb, limit_dni=DAYS_TO_WARNING)
 
+
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
 def zuzyj_produkt_strona(id_produktu):
-    # 1. Szukamy produktu
     produkt = moj_katalog.getProduktById(id_produktu)
-
-    # Zabezpieczenie: jak nie ma takiego ID, wracamy na listę
     if not produkt:
+        flash("Nie znaleziono produktu!", "error")
         return redirect(url_for('lista_produktow'))
-
-    # === POST: Ktoś kliknął "Zapisz" ===
     if request.method == 'POST':
         try:
             ile = float(request.form.get('zuzyta_ilosc'))
-
-            # Logika: odejmowanie
             nowa_ilosc = produkt.ilosc - ile
-
-            # Nie pozwalamy na ujemne ilości
-            if nowa_ilosc < 0:
-                nowa_ilosc = 0
-
-            produkt.ilosc = nowa_ilosc
-
+            if nowa_ilosc <= 0:
+                moj_katalog.removeProduktById(id_produktu)
+                flash(f"Zużyto całość '{produkt.name}'. Usunięto.", "info")
+            else:
+                produkt.ilosc = nowa_ilosc
+                jedn = getattr(produkt, 'jednostka', 'szt')
+                flash(f"Zostało: {nowa_ilosc:g} {jedn}", "success")
         except ValueError:
-            pass  # Ignorujemy błędy
-
-        # Wracamy na listę zobaczyć efekt
+            flash("Błąd! Wpisz liczbę.", "error")
         return redirect(url_for('lista_produktow'))
-
-    # === GET: Ktoś wszedł na stronę ===
     return render_template('zuzyj.html', p=produkt)
 
 
@@ -102,25 +93,15 @@ def edytuj_produkt(id_produktu):
         duplikat = moj_katalog.znajdzDuplikat(nowa_nazwa, nowa_data, nowa_jednostka, jest_mrozone, id_produktu)
 
         if duplikat:
-            # ZNALEZIONO KLONA!
-            # 1. Dodajemy ilość do tamtego produktu
             duplikat.ilosc += nowa_ilosc
 
-            # 2. Usuwamy ten produkt, który edytowaliśmy (bo połączył się z tamtym)
-            # Zakładam, że masz metodę deleteProdukt lub usunProdukt w katalogu:
-            if hasattr(moj_katalog, 'deleteProdukt'):
-                moj_katalog.deleteProdukt(id_produktu)
-            elif hasattr(moj_katalog, 'usunProdukt'):  # Zależy jak nazwałeś funkcję usuwania
-                moj_katalog.usunProdukt(id_produktu)
-            else:
-                # Fallback jakbyś nie miał funkcji usuwania po ID
-                moj_katalog._produkty.remove(produkt)
+            moj_katalog.removeProduktById(id_produktu)
 
             flash(f"Produkt połączono z istniejącym '{duplikat.name}'! (Nowa ilość: {duplikat.ilosc} {nowa_jednostka})",
                   "info")
             return redirect(url_for('lista_produktow'))
 
-        # === SCENARIUSZ B i C: BRAK DUPLIKATU (Twoja stara logika) ===
+        # === SCENARIUSZ B i C: BRAK DUPLIKATU===
 
         stara_jednostka = getattr(produkt, 'jednostka', 'szt')
         czy_byl_sztuki = (stara_jednostka == 'szt')
