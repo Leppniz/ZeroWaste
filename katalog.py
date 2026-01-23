@@ -1,6 +1,7 @@
 from typing import List
 from produkt import Produkt
 from settings import DAYS_TO_WARNING
+from datetime import datetime
 
 class Katalog:
     def __init__(self):
@@ -98,3 +99,34 @@ class Katalog:
                 self._produkty[i] = nowy_obiekt
                 return True
         return False
+
+    #  Znajdowanie duplikatów
+    def znajdzDuplikat(self, nazwa, data_str, jednostka, is_frozen, id_wykluczone):
+        """
+        Szuka produktu o identycznych parametrach, ale innym ID.
+        Zwraca znaleziony obiekt produktu lub None.
+        """
+        try:
+            szukana_data = datetime.strptime(data_str, "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            # Jeśli data jest pusta lub błędna, szukamy None
+            szukana_data = None
+
+        for p in self._produkty:
+            # Nie sprawdzamy produktu, który właśnie edytujemy!
+            if p.id == id_wykluczone:
+                continue
+
+            zgodna_nazwa = p.name.strip().lower() == nazwa.strip().lower()
+
+            zgodna_data = p.data_waznosci == szukana_data
+
+            p_jednostka = getattr(p, 'jednostka', 'szt')
+            zgodna_jednostka = p_jednostka == jednostka
+
+            zgodne_mrozenie = p.isFrozen == is_frozen
+
+            if zgodna_nazwa and zgodna_data and zgodna_jednostka and zgodne_mrozenie:
+                return p
+
+        return None

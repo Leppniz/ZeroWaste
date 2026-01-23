@@ -82,6 +82,7 @@ def zuzyj_produkt_strona(id_produktu):
 
 @app.route('/edytuj/<id_produktu>', methods=['GET', 'POST'])
 def edytuj_produkt(id_produktu):
+    # 1. Pobieramy edytowany produkt
     produkt = moj_katalog.getProduktById(id_produktu)
 
     if not produkt:
@@ -89,47 +90,62 @@ def edytuj_produkt(id_produktu):
         return redirect(url_for('lista_produktow'))
 
     if request.method == 'POST':
-        # 1. Pobieramy dane
+        # 2. Pobieramy dane z formularza
         nowa_nazwa = request.form.get('nazwa')
-        nowa_ilosc = float(request.form.get('ilosc'))  # Tu już float jest ok
+        nowa_ilosc = float(request.form.get('ilosc'))
         nowa_jednostka = request.form.get('jednostka')
-        nowa_data = request.form.get('data')
+        nowa_data = request.form.get('data')  # String np. "2026-01-30"
         jest_mrozone = request.form.get('czy_zamrozone') is not None
 
-        # 2. SPRAWDZAMY CZY ZMIENIA SIĘ TYP (Sztuki <-> Waga)
-        # Pobieramy starą jednostkę (bezpiecznie)
-        stara_jednostka = getattr(produkt, 'jednostka', 'szt')
+        # === SCENARIUSZ A: CZY POWSTANIE DUPLIKAT? ===
+        # Sprawdzamy, czy w lodówce już jest taki produkt (inny niż ten edytowany)
+        duplikat = moj_katalog.znajdzDuplikat(nowa_nazwa, nowa_data, nowa_jednostka, jest_mrozone, id_produktu)
 
-        # Czy zmieniamy "Sztuki -> Waga" ALBO "Waga -> Sztuki"?
+        if duplikat:
+            # ZNALEZIONO KLONA!
+            # 1. Dodajemy ilość do tamtego produktu
+            duplikat.ilosc += nowa_ilosc
+
+            # 2. Usuwamy ten produkt, który edytowaliśmy (bo połączył się z tamtym)
+            # Zakładam, że masz metodę deleteProdukt lub usunProdukt w katalogu:
+            if hasattr(moj_katalog, 'deleteProdukt'):
+                moj_katalog.deleteProdukt(id_produktu)
+            elif hasattr(moj_katalog, 'usunProdukt'):  # Zależy jak nazwałeś funkcję usuwania
+                moj_katalog.usunProdukt(id_produktu)
+            else:
+                # Fallback jakbyś nie miał funkcji usuwania po ID
+                moj_katalog._produkty.remove(produkt)
+
+            flash(f"Produkt połączono z istniejącym '{duplikat.name}'! (Nowa ilość: {duplikat.ilosc} {nowa_jednostka})",
+                  "info")
+            return redirect(url_for('lista_produktow'))
+
+        # === SCENARIUSZ B i C: BRAK DUPLIKATU (Twoja stara logika) ===
+
+        stara_jednostka = getattr(produkt, 'jednostka', 'szt')
         czy_byl_sztuki = (stara_jednostka == 'szt')
         czy_ma_byc_sztuki = (nowa_jednostka == 'szt')
 
+        # Czy zmieniamy TYP? (Sztuki <-> Waga)
         if czy_byl_sztuki != czy_ma_byc_sztuki:
-            # === REINKARNACJA: TWORZYMY NOWY OBIEKT ===
+            # REINKARNACJA (Podmiana obiektu)
             if czy_ma_byc_sztuki:
-                # Zamiana na sztuki (int)
                 nowy_produkt = ProduktSztuki(nowa_nazwa, nowa_data, nowa_ilosc)
             else:
-                # Zamiana na wagę/objętość (kg, l, ml...)
                 nowy_produkt = ProduktWaga(nowa_nazwa, nowa_data, nowa_ilosc, nowa_jednostka)
 
-            # KLUCZOWE: Przepisujemy STARE ID i status mrożenia
-            nowy_produkt.id = produkt.id
+            nowy_produkt.id = produkt.id  # Zachowujemy ID
             nowy_produkt.isFrozen = jest_mrozone
-
-            # Podmieniamy w katalogu
             moj_katalog.podmienProdukt(produkt.id, nowy_produkt)
-
             flash(f"Zmieniono typ produktu na {nowa_jednostka}!", "success")
 
         else:
-            # === ZWYKŁA EDYCJA (Ten sam typ) ===
+            # ZWYKŁA AKTUALIZACJA
             produkt.name = nowa_nazwa
             produkt.ilosc = nowa_ilosc
             produkt.data_waznosci = nowa_data
             produkt.isFrozen = jest_mrozone
 
-            # Tylko jeśli to nie są sztuki, aktualizujemy jednostkę
             if not czy_byl_sztuki:
                 produkt.jednostka = nowa_jednostka
 
