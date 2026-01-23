@@ -82,6 +82,11 @@ class Produkt(ABC):
         elif isinstance(nowa_data, datetime) or isinstance(nowa_data, datetime.date):
             self._data_waznosci = nowa_data
 
+    @property
+    def data_bazowa(self):
+        """Zwraca oryginalną datę ważności (bez doliczania dni za mrożenie)"""
+        return self._data_waznosci
+
     @abstractmethod
     def getInfo(self):
         pass
