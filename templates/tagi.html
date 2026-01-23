@@ -21,6 +21,7 @@
                 <thead>
                     <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                         <th class="p-4 font-semibold">Produkt</th>
+                        <th class="p-4 font-semibold">Ilość</th>
                         <th class="p-4 font-semibold">Tagi</th>
                         <th class="p-4 font-semibold text-right">Akcje</th>
                     </tr>
@@ -34,6 +35,9 @@
                             {% if p.isFrozen %}
                                 <span class="text-xs ml-2 text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-100" title="Zamrożone">❄️ Mrożone</span>
                             {% endif %}
+                        </td>
+                        <td class="p-4 text-gray-600">
+                            <span class="font-bold text-gray-800">{{ p.ilosc }}</span> {{ p.jednostka }}
                         </td>
 
                         <td class="p-4">
