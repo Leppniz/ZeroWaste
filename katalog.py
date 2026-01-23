@@ -6,8 +6,18 @@ class Katalog:
     def __init__(self):
         self._produkty: List[Produkt] = []
 
-    def addProdukt(self, produkt: Produkt):
-        self._produkty.append(produkt)
+    def addProdukt(self, nowy_produkt):
+        for p in self._produkty:
+            zgodna_nazwa = p.name.strip().lower() == nowy_produkt.name.strip().lower()
+            zgodna_data = p.data_waznosci == nowy_produkt.data_waznosci
+            zgodna_jednostka = getattr(p, 'jednostka', 'szt') == getattr(nowy_produkt, 'jednostka', 'szt')
+            zgodne_mrozenie = p.isFrozen == nowy_produkt.isFrozen
+
+            if zgodna_nazwa and zgodna_data and zgodna_jednostka and zgodne_mrozenie:
+                p.ilosc += nowy_produkt.ilosc
+                return
+
+        self._produkty.append(nowy_produkt)
 
     def wyswietl(self):
         for p in self._produkty:
@@ -36,15 +46,17 @@ class Katalog:
 
         for p in self._produkty:
             nazwa_ladna = p.name.strip().capitalize()
+            # Pobieramy jednostkę bezpiecznie
+            jednostka = getattr(p, 'jednostka', 'szt')
 
-            if nazwa_ladna not in grupa:
-                grupa[nazwa_ladna] = {
-                    'ilosc': 0,
-                    'jednostka': p.jednostka
-                }
+            # TWORZYMY KLUCZ UNIKALNY: (Nazwa, Jednostka)
+            # Dzięki temu "Mleko (l)" i "Mleko (szt)" to będą dwie osobne pozycje!
+            klucz = (nazwa_ladna, jednostka)
 
-            if p.jednostka == grupa[nazwa_ladna]['jednostka']:
-                grupa[nazwa_ladna]['ilosc'] += p.ilosc
+            if klucz not in grupa:
+                grupa[klucz] = 0.0  # Startujemy od zera (float)
+
+            grupa[klucz] += p.ilosc
 
         return grupa
 

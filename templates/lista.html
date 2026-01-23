@@ -39,7 +39,8 @@
                         </tr>
                     </thead>
                     <tbody class="block md:table-row-group space-y-3 md:space-y-0 md:p-0">
-                        {% for nazwa, dane in produkty.items() %}
+                        {% for (nazwa, jednostka), laczna_ilosc in produkty.items() %}
+
                         <tr class="block md:table-row bg-white rounded-xl border border-gray-100 md:rounded-none md:hover:bg-gray-50 transition-colors">
 
                             <td class="block md:table-cell p-4 pb-0 md:border-b md:border-gray-100">
@@ -50,8 +51,8 @@
                                 <div class="flex items-center justify-between md:justify-end w-full">
                                     <span class="md:hidden text-gray-400 text-sm uppercase font-semibold">Razem:</span>
                                     <div>
-                                        <span class="font-bold text-2xl text-green-600">{{ dane.ilosc }}</span>
-                                        <span class="text-sm text-gray-500 uppercase font-medium ml-1">{{ dane.jednostka }}</span>
+                                        <span class="font-bold text-2xl text-green-600">{{ '%g' % laczna_ilosc }}</span>
+                                        <span class="text-sm text-gray-500 uppercase font-medium ml-1">{{ jednostka }}</span>
                                     </div>
                                 </div>
                             </td>
