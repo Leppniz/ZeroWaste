@@ -43,7 +43,7 @@ def save_produkty_do_json(path, katalog):
             "tags": p.tags
         }
 
-        if hasattr(p, "jednostka"):
+        if hasattr(p, "jednostka") and p.jednostka != "szt":
             base.update({
                 "typ": "waga",
                 "ilosc": p.ilosc,
