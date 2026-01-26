@@ -32,6 +32,51 @@ def strona_glowna():
     return render_template('dashboard.html', **context)
 
 
+#================================== PRODUKT ====================================
+@app.route('/usun/<id_produktu>')
+def usun_produkt(id_produktu):
+    moj_katalog.removeProduktById(id_produktu)
+
+    # 🔥 persist change
+    save_produkty_do_json("produkty.json", moj_katalog)
+
+    return redirect(request.referrer or url_for('strona_glowna'))
+@app.route('/dodaj', methods=['GET', 'POST'])
+def dodaj_produkt():
+    if request.method == 'POST':
+        nazwa = request.form.get('nazwa')
+        data = request.form.get('data')
+
+        try:
+            ilosc = float(request.form.get('ilosc'))
+        except ValueError:
+            ilosc = 0.0
+
+        jednostka = request.form.get('wybrana_jednostka')
+        jest_mrozone = request.form.get('czy_zamrozone') is not None
+
+        if jednostka == 'szt':
+            nowy_produkt = ProduktSztuki(nazwa, data, float(ilosc))
+        else:
+            nowy_produkt = ProduktWaga(nazwa, data, ilosc, jednostka)
+
+        nowy_produkt.isFrozen = jest_mrozone
+
+        moj_katalog.addProdukt(nowy_produkt)
+
+        # ✅ persist change
+        save_produkty_do_json("produkty.json", moj_katalog)
+
+        chce_kolejny = request.form.get('dodaj_kolejny')
+
+        if chce_kolejny:
+            flash(f"Dodano produkt: {nazwa}. Możesz dodać następny.", "success")
+            return redirect(url_for('dodaj_produkt'))
+        else:
+            return redirect(url_for('lista_produktow'))
+
+    return render_template('dodaj.html')
+
 #================================== LISTA ====================================
 @app.route('/lista')
 def lista_produktow():
@@ -47,6 +92,105 @@ def lista_produktow():
 
     return render_template('lista.html', produkty=produkty_data, tryb=tryb, limit_dni=DAYS_TO_WARNING)
 
+
+@app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
+def zuzyj_produkt_strona(id_produktu):
+    produkt = moj_katalog.getProduktById(id_produktu)
+
+    if not produkt:
+        flash("Nie znaleziono produktu!", "error")
+        return redirect(url_for('lista_produktow'))
+
+    if request.method == 'POST':
+        try:
+            ile = float(request.form.get('zuzyta_ilosc'))
+            nowa_ilosc = produkt.ilosc - ile
+
+            if nowa_ilosc <= 0:
+                moj_katalog.removeProduktById(id_produktu)
+                flash(f"Zużyto całość '{produkt.name}'. Usunięto.", "info")
+            else:
+                produkt.ilosc = nowa_ilosc
+                jedn = getattr(produkt, 'jednostka', 'szt')
+                flash(f"Zostało: {nowa_ilosc:g} {jedn}", "success")
+
+            # 🔥 SAVE AFTER CHANGE
+            save_produkty_do_json("produkty.json", moj_katalog)
+
+        except ValueError:
+            flash("Błąd! Wpisz liczbę.", "error")
+
+        return redirect(url_for('lista_produktow'))
+
+    return render_template('zuzyj.html', p=produkt)
+@app.route('/edytuj/<id_produktu>', methods=['GET', 'POST'])
+def edytuj_produkt(id_produktu):
+    produkt = moj_katalog.getProduktById(id_produktu)
+
+    if not produkt:
+        flash("Nie znaleziono produktu!", "error")
+        return redirect(url_for('lista_produktow'))
+
+    if request.method == 'POST':
+        nowa_nazwa = request.form.get('nazwa')
+        nowa_ilosc = float(request.form.get('ilosc'))
+        nowa_jednostka = request.form.get('jednostka')
+        nowa_data = request.form.get('data')
+        jest_mrozone = request.form.get('czy_zamrozone') is not None
+
+        # === SCENARIUSZ A: DUPLIKAT ===
+        duplikat = moj_katalog.znajdzDuplikat(
+            nowa_nazwa, nowa_data, nowa_jednostka, jest_mrozone, id_produktu
+        )
+
+        if duplikat:
+            duplikat.ilosc += nowa_ilosc
+            moj_katalog.removeProduktById(id_produktu)
+
+            save_produkty_do_json("produkty.json", moj_katalog)  # 🔥 SAVE
+
+            flash(
+                f"Produkt połączono z istniejącym '{duplikat.name}'! "
+                f"(Nowa ilość: {duplikat.ilosc} {nowa_jednostka})",
+                "info"
+            )
+            return redirect(url_for('lista_produktow'))
+
+        # === SCENARIUSZ B / C ===
+        stara_jednostka = getattr(produkt, 'jednostka', 'szt')
+        czy_byl_sztuki = (stara_jednostka == 'szt')
+        czy_ma_byc_sztuki = (nowa_jednostka == 'szt')
+
+        if czy_byl_sztuki != czy_ma_byc_sztuki:
+            # REINKARNACJA
+            if czy_ma_byc_sztuki:
+                nowy_produkt = ProduktSztuki(nowa_nazwa, nowa_data, nowa_ilosc)
+            else:
+                nowy_produkt = ProduktWaga(nowa_nazwa, nowa_data, nowa_ilosc, nowa_jednostka)
+
+            nowy_produkt.id = produkt.id
+            nowy_produkt.isFrozen = jest_mrozone
+            moj_katalog.podmienProdukt(produkt.id, nowy_produkt)
+
+            flash(f"Zmieniono typ produktu na {nowa_jednostka}!", "success")
+
+        else:
+            # ZWYKŁA AKTUALIZACJA
+            produkt.name = nowa_nazwa
+            produkt.ilosc = nowa_ilosc
+            produkt.data_waznosci = nowa_data
+            produkt.isFrozen = jest_mrozone
+
+            if not czy_byl_sztuki:
+                produkt.jednostka = nowa_jednostka
+
+            flash(f"Zaktualizowano produkt: {produkt.name}", "success")
+
+        save_produkty_do_json("produkty.json", moj_katalog)  # 🔥 SAVE
+
+        return redirect(url_for('lista_produktow'))
+
+    return render_template('edytuj.html', p=produkt)
 
 #================================== TAGI ====================================
 @app.route('/tagi')
@@ -95,99 +239,18 @@ def toggle_freeze():
     produkt = moj_katalog.getProduktById(produkt_id)
 
     if produkt:
-        produkt.isFrozen = not produkt.isFrozen  # przełączamy stan zamrożenia
-        flash(f"{produkt.name} został {'zamrożony ❄️' if produkt.isFrozen else 'odmrożony'}", "success")
+        produkt.isFrozen = not produkt.isFrozen  # toggle state
 
-        # Opcjonalnie: jeśli chcesz, możesz tu też zapisać do JSON, żeby zmiany były trwałe
+        flash(
+            f"{produkt.name} został {'zamrożony ❄️' if produkt.isFrozen else 'odmrożony'}",
+            "success"
+        )
+
+        # 🔥 THIS IS THE IMPORTANT PART
+        save_produkty_do_json("produkty.json", moj_katalog)
 
     return redirect(request.referrer or url_for('mrozenie'))
-@app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
-def zuzyj_produkt_strona(id_produktu):
-    produkt = moj_katalog.getProduktById(id_produktu)
-    if not produkt:
-        flash("Nie znaleziono produktu!", "error")
-        return redirect(url_for('lista_produktow'))
-    if request.method == 'POST':
-        try:
-            ile = float(request.form.get('zuzyta_ilosc'))
-            nowa_ilosc = produkt.ilosc - ile
-            if nowa_ilosc <= 0:
-                moj_katalog.removeProduktById(id_produktu)
-                flash(f"Zużyto całość '{produkt.name}'. Usunięto.", "info")
-            else:
-                produkt.ilosc = nowa_ilosc
-                jedn = getattr(produkt, 'jednostka', 'szt')
-                flash(f"Zostało: {nowa_ilosc:g} {jedn}", "success")
-        except ValueError:
-            flash("Błąd! Wpisz liczbę.", "error")
-        return redirect(url_for('lista_produktow'))
-    return render_template('zuzyj.html', p=produkt)
 
-
-@app.route('/edytuj/<id_produktu>', methods=['GET', 'POST'])
-def edytuj_produkt(id_produktu):
-    # 1. Pobieramy edytowany produkt
-    produkt = moj_katalog.getProduktById(id_produktu)
-
-    if not produkt:
-        flash("Nie znaleziono produktu!", "error")
-        return redirect(url_for('lista_produktow'))
-
-    if request.method == 'POST':
-        # 2. Pobieramy dane z formularza
-        nowa_nazwa = request.form.get('nazwa')
-        nowa_ilosc = float(request.form.get('ilosc'))
-        nowa_jednostka = request.form.get('jednostka')
-        nowa_data = request.form.get('data')  # String np. "2026-01-30"
-        jest_mrozone = request.form.get('czy_zamrozone') is not None
-
-        # === SCENARIUSZ A: CZY POWSTANIE DUPLIKAT? ===
-        # Sprawdzamy, czy w lodówce już jest taki produkt (inny niż ten edytowany)
-        duplikat = moj_katalog.znajdzDuplikat(nowa_nazwa, nowa_data, nowa_jednostka, jest_mrozone, id_produktu)
-
-        if duplikat:
-            duplikat.ilosc += nowa_ilosc
-
-            moj_katalog.removeProduktById(id_produktu)
-
-            flash(f"Produkt połączono z istniejącym '{duplikat.name}'! (Nowa ilość: {duplikat.ilosc} {nowa_jednostka})",
-                  "info")
-            return redirect(url_for('lista_produktow'))
-
-        # === SCENARIUSZ B i C: BRAK DUPLIKATU===
-
-        stara_jednostka = getattr(produkt, 'jednostka', 'szt')
-        czy_byl_sztuki = (stara_jednostka == 'szt')
-        czy_ma_byc_sztuki = (nowa_jednostka == 'szt')
-
-        # Czy zmieniamy TYP? (Sztuki <-> Waga)
-        if czy_byl_sztuki != czy_ma_byc_sztuki:
-            # REINKARNACJA (Podmiana obiektu)
-            if czy_ma_byc_sztuki:
-                nowy_produkt = ProduktSztuki(nowa_nazwa, nowa_data, nowa_ilosc)
-            else:
-                nowy_produkt = ProduktWaga(nowa_nazwa, nowa_data, nowa_ilosc, nowa_jednostka)
-
-            nowy_produkt.id = produkt.id  # Zachowujemy ID
-            nowy_produkt.isFrozen = jest_mrozone
-            moj_katalog.podmienProdukt(produkt.id, nowy_produkt)
-            flash(f"Zmieniono typ produktu na {nowa_jednostka}!", "success")
-
-        else:
-            # ZWYKŁA AKTUALIZACJA
-            produkt.name = nowa_nazwa
-            produkt.ilosc = nowa_ilosc
-            produkt.data_waznosci = nowa_data
-            produkt.isFrozen = jest_mrozone
-
-            if not czy_byl_sztuki:
-                produkt.jednostka = nowa_jednostka
-
-            flash(f"Zaktualizowano produkt: {produkt.name}", "success")
-
-        return redirect(url_for('lista_produktow'))
-
-    return render_template('edytuj.html', p=produkt)
 
 #================================== ZAKUPY ====================================
 @app.route('/zakupy')
@@ -249,57 +312,6 @@ def wyszukiwarka():
         produkty = [p for p in moj_katalog.getAll() if query in p.name.lower()]
 
     return render_template("wyszukiwarka.html", produkty=produkty)
-
-
-@app.route('/usun/<id_produktu>')
-def usun_produkt(id_produktu):
-    moj_katalog.removeProduktById(id_produktu)
-    return redirect(request.referrer or url_for('strona_glowna'))
-
-
-@app.route('/dodaj', methods=['GET', 'POST'])
-def dodaj_produkt():
-    # === POST: Zapisujemy dane ===
-    if request.method == 'POST':
-        nazwa = request.form.get('nazwa')
-        data = request.form.get('data')
-
-        try:
-            ilosc = float(request.form.get('ilosc'))
-        except ValueError:
-            ilosc = 0.0
-
-        jednostka = request.form.get('wybrana_jednostka')
-
-        # 1. Sprawdzamy, czy użytkownik zaznaczył "Zamrożone"
-        # Checkbox zwraca 'on' jeśli zaznaczony, albo None, jeśli nie
-        jest_mrozone = request.form.get('czy_zamrozone') is not None
-
-        # 2. Tworzymy obiekt (OOP)
-        if jednostka == 'szt':
-            nowy_produkt = ProduktSztuki(nazwa, data, float(ilosc))
-        else:
-            nowy_produkt = ProduktWaga(nazwa, data, ilosc, jednostka)
-
-        # Ustawiamy flagę zamrożenia (musisz mieć pole is_frozen w klasie Produkt!)
-        nowy_produkt.isFrozen = jest_mrozone
-
-        # 3. Dodajemy do katalogu
-        moj_katalog.addProdukt(nowy_produkt)
-
-        # 4. Sprawdzamy, czy user chce dodać kolejny, czy wyjść
-        chce_kolejny = request.form.get('dodaj_kolejny')
-
-        if chce_kolejny:
-            # Jeśli zaznaczył "Dodaj kolejny", wyświetlamy komunikat i zostajemy tu
-            flash(f"Dodano produkt: {nazwa}. Możesz dodać następny.", "success")
-            return redirect(url_for('dodaj_produkt'))
-        else:
-            # Standardowo wracamy na listę
-            return redirect(url_for('lista_produktow'))
-
-    # === GET: Wyświetlamy formularz ===
-    return render_template('dodaj.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -60,15 +60,5 @@
     "typ": "waga",
     "ilosc": 0.8,
     "jednostka": "kg"
-  },
-  {
-    "id": "027d04b2",
-    "nazwa": "Test",
-    "data": null,
-    "zamrozone": false,
-    "tags": [],
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "szt"
   }
 ]
