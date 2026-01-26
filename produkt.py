@@ -43,6 +43,10 @@ class Produkt(ABC):
     def id(self):
         return self._id
 
+    @id.setter
+    def id(self, nowe_id):
+        self._id = nowe_id
+
     @property
     def isFrozen(self):
         return self._isFrozen
@@ -102,6 +106,11 @@ class Produkt(ABC):
                 print(f"Błąd: Zły foramt daty '{nowa_data}'. Użyj YYYY-MM-DD")
         elif isinstance(nowa_data, datetime) or isinstance(nowa_data, datetime.date):
             self._data_waznosci = nowa_data
+
+    @property
+    def data_bazowa(self):
+        """Zwraca oryginalną datę ważności (bez doliczania dni za mrożenie)"""
+        return self._data_waznosci
 
     @abstractmethod
     def getInfo(self):

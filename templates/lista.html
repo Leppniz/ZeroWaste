@@ -3,89 +3,174 @@
 {% block content %}
     
     <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <div>
+        <div class="flex flex-col w-full">
             <h2 class="text-2xl font-bold text-gray-800">Twoja Lodówka</h2>
             <p class="text-gray-500 text-sm">Zarządzaj swoimi zapasami.</p>
         </div>
         
-        <a href="{{ url_for('dodaj_produkt') }}" class="sm:hidden w-full text-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50 transition">
-            + Dodaj nowy produkt
+        <a href="{{ url_for('dodaj_produkt') }}" class="sm:hidden w-full text-center bg-green-600 text-white font-medium px-4 py-3 rounded-lg shadow hover:bg-green-700 transition">
+            + Dodaj produkt
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        
+    <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
+        <a href="{{ url_for('lista_produktow', tryb='szczegoly') }}"
+           class="whitespace-nowrap px-6 py-3 font-medium text-sm transition-colors border-b-2
+           {% if tryb == 'szczegoly' %} border-green-600 text-green-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 {% endif %}">
+           📅 Daty ważności
+        </a>
+        <a href="{{ url_for('lista_produktow', tryb='ogolne') }}"
+           class="whitespace-nowrap px-6 py-3 font-medium text-sm transition-colors border-b-2
+           {% if tryb == 'ogolne' %} border-green-600 text-green-600 {% else %} border-transparent text-gray-500 hover:text-gray-700 {% endif %}">
+           📦 Wszystkie
+        </a>
+    </div>
+
+    <div class="bg-gray-50 md:bg-white rounded-lg md:shadow-sm md:border md:border-gray-200 overflow-hidden">
+
         {% if produkty %}
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                        <th class="p-4 font-semibold">Produkt</th>
-                        <th class="p-4 font-semibold">Ilość</th>
-                        <th class="p-4 font-semibold">Data ważności</th>
-                        <th class="p-4 font-semibold">Status</th>
-                        <th class="p-4 font-semibold text-right">Akcje</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    {% for p in produkty %}
-                    <tr class="hover:bg-gray-50 transition-colors group">
 
-                        <td class="p-4 font-medium text-gray-800">
-                            {{ p.name }}
+            {% if tryb == 'ogolne' %}
+            <div class="overflow-visible"> <table class="w-full text-left border-collapse block md:table">
+                    <thead class="hidden md:table-header-group">
+                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                            <th class="px-4 py-4 font-semibold">Nazwa produktu</th>
+                            <th class="px-4 py-4 font-semibold text-right">Łączna ilość</th>
+                        </tr>
+                    </thead>
+                    <tbody class="block md:table-row-group space-y-3 md:space-y-0 md:p-0">
+                        {% for (nazwa, jednostka), laczna_ilosc in produkty.items() %}
+
+                        <tr class="block md:table-row bg-white rounded-xl border border-gray-100 md:rounded-none md:hover:bg-gray-50 transition-colors">
+
+                            <td class="block md:table-cell p-4 pb-0 md:border-b md:border-gray-100">
+                                <span class="text-lg font-bold text-gray-800">{{ nazwa }}</span>
+                            </td>
+
+                            <td class="block md:table-cell p-4 pt-0 md:pt-4 md:text-right md:border-b md:border-gray-100">
+                                <div class="flex items-center justify-between md:justify-end w-full">
+                                    <span class="md:hidden text-gray-400 text-sm uppercase font-semibold">Razem:</span>
+                                    <div>
+                                        <span class="font-bold text-2xl text-green-600">{{ '%g' % laczna_ilosc }}</span>
+                                        <span class="text-sm text-gray-500 uppercase font-medium ml-1">{{ jednostka }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% else %}
+            <div class="overflow-visible">
+                <table class="w-full text-left border-collapse block md:table">
+
+                    <thead class="hidden md:table-header-group">
+                        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+                            <th class="px-4 py-4 font-semibold">Produkt</th> <th class="px-4 py-4 font-semibold">Data ważności</th>
+                            <th class="px-4 py-4 font-semibold text-right">Ilość</th> <th class="px-4 py-4 font-semibold text-right">Akcje</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="block md:table-row-group space-y-4 md:space-y-0 md:p-0">
+                        {% for p in produkty %}
+
+                        <tr class="relative block md:table-row rounded-xl shadow-sm border md:border-none md:shadow-none md:rounded-none group transition-all
                             {% if p.isFrozen %}
-                                <span class="text-xs ml-2 text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-100" title="Zamrożone">❄️ Mrożone</span>
-                            {% endif %}
-                        </td>
-
-                        <td class="p-4 text-gray-600">
-                            <span class="font-bold text-gray-800">{{ p.ilosc }}</span> {{ p.jednostka }}
-                        </td>
-
-                        <td class="p-4 text-gray-600 font-mono text-sm">
-                            {{ p.data_waznosci }}
-                        </td>
-
-                        <td class="p-4">
-                            {% if p.ile_dni_waznosci < 0 %}
-                                <span class="inline-flex text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                                    Przeterminowane
-                                </span>
-                            {% elif p.ile_dni_waznosci <= limit_dni %}
-                                <span class="inline-flex w-full justify-center text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                                    Zjedz szybko <br> ({{ p.ile_dni_waznosci }} dni)
-                                </span>
+                                /* ZAMROŻONE: Delikatne niebieskie paski */
+                                bg-cyan-50/50 border-cyan-200 md:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,0.6)_10px,rgba(255,255,255,0.6)_20px)]
+                            {% elif p.ile_dni_waznosci < 0 %}
+                                /* PRZETERMINOWANE: Jasny czerwony + czerwone paski (ostrzeżenie) */
+                                bg-red-50 border-red-200 md:bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(220,38,38,0.05)_10px,rgba(220,38,38,0.05)_20px)]
                             {% else %}
-                                <span class="inline-flex w-full justify-center text-center items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                                    OK <br> ({{ p.ile_dni_waznosci }} dni)
-                                </span>
-                            {% endif %}
-                        </td>
+                                md:hover:bg-gray-50 bg-white border-gray-200
+                            {% endif %}">
 
-                        <td class="p-4 text-right space-x-2 whitespace-nowrap">
-                            <a href="/zuzyj/{{ p.id }}"
-                               class="inline-block text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition">
-                                🍴 Zużyj
-                            </a>
+                            <td class="block md:table-cell p-4 pb-1 md:pb-4 md:border-b md:border-gray-100">
+                                <div class="flex flex-col md:flex-row md:items-center">
+                                    <span class="text-lg font-bold text-gray-800 pr-20 md:pr-0 leading-tight">
+                                        {{ p.name.capitalize() }}
+                                    </span>
+                                    {% if p.isFrozen %}
+                                        <span class="inline-block w-max mt-1 md:mt-0 md:ml-2 text-[10px] uppercase tracking-wide font-bold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded-full border border-cyan-200">
+                                            ❄️ Mrożone
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
 
-                            <a href="/usun/{{ p.id }}"
-                               onclick="return confirm('Czy na pewno chcesz usunąć {{ p.name }}?')"
-                               class="inline-block text-sm bg-white border border-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition">
-                                🗑️ Usuń
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
+                            <td class="block md:table-cell px-4 py-2 md:py-4 md:border-b md:border-gray-100">
+                                <div class="flex items-center gap-4 md:justify-start md:gap-3">
+
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <span class="md:hidden w-6 text-center mr-1">📅</span>
+                                        <span class="font-mono font-medium">{{ p.data_waznosci }}</span>
+                                    </div>
+
+                                    <div>
+                                        {% if p.ile_dni_waznosci < 0 %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                                                ⚠️ Przeterminowane
+                                            </span>
+                                        {% elif p.ile_dni_waznosci <= limit_dni %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                                ⏳ {{ p.ile_dni_waznosci }} dni
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                                ✅ {{ p.ile_dni_waznosci }} dni
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="block md:table-cell p-4 md:border-b md:border-gray-100 md:text-right
+                                       absolute top-0 right-0 md:static">
+                                <div class="flex flex-col items-end md:block">
+                                    <span class="font-extrabold text-xl md:text-base text-gray-800">
+                                        {{ p.ilosc }}
+                                    </span>
+                                    <span class="text-xs font-bold uppercase text-gray-400 md:text-gray-500">
+                                        {{ p.jednostka }}
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="block md:table-cell p-3 md:p-4 md:mt-0 bg-gray-50 md:bg-transparent rounded-b-xl md:rounded-none border-t border-gray-100 md:border-none md:border-b md:border-gray-100 md:text-right">
+                                <div class="flex gap-3 justify-end">
+                                    <a href="/zuzyj/{{ p.id }}"
+                                       class="flex-1 md:flex-none justify-center items-center inline-flex text-sm font-medium bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition shadow-sm">
+                                        🍴 Zużyj
+                                    </a>
+
+                                    <a href="/usun/{{ p.id }}"
+                                       onclick="return confirm('Czy na pewno chcesz usunąć {{ p.name }}?')"
+                                       class="flex-none justify-center items-center inline-flex text-sm bg-white border border-gray-300 text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 hover:border-red-300 transition shadow-sm">
+                                        🗑️
+                                    </a>
+
+                                    <a href="/edytuj/{{ p.id }}"
+                                       class="flex-none justify-center items-center inline-flex text-sm bg-white border border-gray-300 text-orange-600 px-3 py-2 rounded-lg hover:bg-orange-50 hover:border-orange-300 transition shadow-sm">
+                                        ✏️
+                                    </a>
+                                </div>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
         {% else %}
-            <div class="text-center py-16">
+            <div class="text-center py-16 bg-white rounded-lg border border-gray-200 m-4 md:m-0">
                 <div class="text-6xl mb-4">📭</div>
-                <h3 class="text-xl font-medium text-gray-900">Twoja lodówka jest pusta</h3>
-                <p class="text-gray-500 mt-1 mb-6">Dodaj pierwsze produkty, aby zacząć kontrolować terminy.</p>
-                <a href="{{ url_for('dodaj_produkt') }}" class="bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 shadow transition">
+                <h3 class="text-xl font-medium text-gray-900">Lodówka pusta!</h3>
+                <p class="text-gray-500 mt-1 mb-6 px-4">Twoje zapasy się skończyły. Czas na zakupy?</p>
+                <a href="{{ url_for('dodaj_produkt') }}" class="bg-green-600 text-white px-8 py-3 rounded-full hover:bg-green-700 shadow-lg transition font-medium">
                     + Dodaj pierwszy produkt
                 </a>
             </div>

@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ZeroWaste App{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes znikaj {
+            0%, 80% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-50 text-gray-800">
 
@@ -12,7 +18,7 @@
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
 
             <a href="{{ url_for('strona_glowna') }}" class="flex items-center gap-2 text-xl font-bold text-green-600 hover:text-green-700 transition">
-                <span>🍏</span> ZeroWaste <span class="text-xs font-normal text-gray-400 border border-gray-200 rounded px-1">v0.1</span>
+                <span>🍏</span> ZeroWaste <span class="text-xs font-normal text-gray-400 border border-gray-200 rounded px-1">v1.0</span>
             </a>
 
             <div class="flex items-center gap-4 text-sm font-medium">
@@ -42,7 +48,37 @@
         </div>
     </nav>
 
-    <div class="flex-grow container mx-auto px-4 py-8">
+    <div class="fixed top-24 right-5 z-50 w-full max-w-sm ml-auto px-4 sm:px-0 pointer-events-none">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+
+                    <div style="animation: znikaj 5s forwards;"
+                         class="pointer-events-auto flex items-center shadow-lg rounded-lg p-4 mb-3 border
+                        {% if category == 'error' %} border-red-500 text-red-700 bg-red-50
+                        {% elif category == 'warning' %} border-yellow-500 text-yellow-700 bg-yellow-50
+                        {% elif category == 'info' %} border-blue-500 text-blue-700 bg-blue-50
+                        {% else %} border-green-500 text-green-700 bg-green-50
+                        {% endif %}">
+
+                        <span class="text-2xl mr-3">
+                            {% if category == 'error' %} ⛔
+                            {% elif category == 'warning' %} ⚠️
+                            {% elif category == 'info' %} ℹ️
+                            {% else %} ✅
+                            {% endif %}
+                        </span>
+
+                        <span class="font-medium text-sm flex-1">{{ message }}</span>
+
+                        </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="flex-grow container mx-auto px-2 py-8">
         {% block content %}
         {% endblock %}
     </div>
