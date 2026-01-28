@@ -5,7 +5,6 @@ from katalog import Katalog
 from produkt import ProduktSztuki, ProduktWaga
 from settings import DAYS_TO_WARNING
 
-
 app = Flask(__name__)
 
 # Config - zeby widziec zmiany od razu
@@ -31,16 +30,16 @@ def strona_glowna():
 
     return render_template('dashboard.html', **context)
 
-
 #================================== PRODUKT ====================================
+
 @app.route('/usun/<id_produktu>')
 def usun_produkt(id_produktu):
     moj_katalog.removeProduktById(id_produktu)
 
-    # 🔥 persist change
     save_produkty_do_json("produkty.json", moj_katalog)
 
     return redirect(request.referrer or url_for('strona_glowna'))
+
 @app.route('/dodaj', methods=['GET', 'POST'])
 def dodaj_produkt():
     if request.method == 'POST':
@@ -64,7 +63,6 @@ def dodaj_produkt():
 
         moj_katalog.addProdukt(nowy_produkt)
 
-        # ✅ persist change
         save_produkty_do_json("produkty.json", moj_katalog)
 
         chce_kolejny = request.form.get('dodaj_kolejny')
@@ -78,6 +76,7 @@ def dodaj_produkt():
     return render_template('dodaj.html')
 
 #================================== LISTA ====================================
+
 @app.route('/lista')
 def lista_produktow():
     # Pobieramy tryb z paska adresu (domyślnie 'szczegoly')
@@ -91,7 +90,6 @@ def lista_produktow():
         produkty_data = moj_katalog.getAll()
 
     return render_template('lista.html', produkty=produkty_data, tryb=tryb, limit_dni=DAYS_TO_WARNING)
-
 
 @app.route('/zuzyj/<id_produktu>', methods=['GET', 'POST'])
 def zuzyj_produkt_strona(id_produktu):
@@ -114,7 +112,6 @@ def zuzyj_produkt_strona(id_produktu):
                 jedn = getattr(produkt, 'jednostka', 'szt')
                 flash(f"Zostało: {nowa_ilosc:g} {jedn}", "success")
 
-            # 🔥 SAVE AFTER CHANGE
             save_produkty_do_json("produkty.json", moj_katalog)
 
         except ValueError:
@@ -123,6 +120,7 @@ def zuzyj_produkt_strona(id_produktu):
         return redirect(url_for('lista_produktow'))
 
     return render_template('zuzyj.html', p=produkt)
+
 @app.route('/edytuj/<id_produktu>', methods=['GET', 'POST'])
 def edytuj_produkt(id_produktu):
     produkt = moj_katalog.getProduktById(id_produktu)
@@ -193,12 +191,14 @@ def edytuj_produkt(id_produktu):
     return render_template('edytuj.html', p=produkt)
 
 #================================== TAGI ====================================
+
 @app.route('/tagi')
 def tagi():
     # Pobieramy listę obiektów z Katalog
     lista = moj_katalog.getAll()
     # Przekazanie do HTML'a
     return render_template('tagi.html', produkty=lista, limit_dni=DAYS_TO_WARNING)
+
 @app.route("/dodaj-tag", methods=["POST"])
 def dodaj_tag():
     produkt_id = request.form.get("produkt_id")
@@ -207,7 +207,7 @@ def dodaj_tag():
 
     if produkt and tag:
         produkt.add_tag(tag)
-        save_produkty_do_json("produkty.json", moj_katalog)  # ✅ persist
+        save_produkty_do_json("produkty.json", moj_katalog)
         flash(f"Dodano tag: #{tag}", "success")
 
     return redirect(request.referrer or url_for("lista_produktow"))
@@ -221,12 +221,13 @@ def usun_tag():
 
     if produkt and tag:
         produkt.remove_tag(tag)
-        save_produkty_do_json("produkty.json", moj_katalog)  # ✅ persist
+        save_produkty_do_json("produkty.json", moj_katalog)
         flash(f"Usunięto tag: #{tag}", "info")
 
     return redirect(request.referrer or url_for("lista_produktow"))
 
 #================================== MROZENIE ====================================
+
 @app.route('/mrozenie')
 def mrozenie():
     # Pobieramy wszystkie produkty z katalogu
@@ -239,26 +240,24 @@ def toggle_freeze():
     produkt = moj_katalog.getProduktById(produkt_id)
 
     if produkt:
-        produkt.isFrozen = not produkt.isFrozen  # toggle state
+        produkt.isFrozen = not produkt.isFrozen
 
         flash(
             f"{produkt.name} został {'zamrożony ❄️' if produkt.isFrozen else 'odmrożony'}",
             "success"
         )
 
-        # 🔥 THIS IS THE IMPORTANT PART
         save_produkty_do_json("produkty.json", moj_katalog)
 
     return redirect(request.referrer or url_for('mrozenie'))
 
-
 #================================== ZAKUPY ====================================
+
 @app.route('/zakupy')
 def zakupy():
     # Pobieramy listę produktów z katalogu zakupów
     produkty = zakupy_katalog.getAll()
     return render_template('zakupy.html', produkty=produkty)
-
 
 @app.route('/dodajzakupy', methods=['GET', 'POST'])
 def dodaj_zakupy():
@@ -286,8 +285,8 @@ def dodaj_zakupy():
         flash(f"Dodano {ilosc} {jednostka} {nazwa} do listy zakupów.", "success")
         return redirect(url_for('zakupy'))
 
-    # GET: wyświetlamy formularz
     return render_template('dodajzakupy.html')
+
 @app.route("/usunzakupy", methods=["POST"])
 def usun_zakupy():
     produkt_id = request.form.get("produkt_id")
@@ -300,8 +299,8 @@ def usun_zakupy():
 
     return redirect(url_for("zakupy"))
 
-
 #================================== WYSZUKIWARKA ====================================
+
 @app.route("/wyszukiwarka", methods=["GET"])
 def wyszukiwarka():
     query = request.args.get("q", "").strip().lower()

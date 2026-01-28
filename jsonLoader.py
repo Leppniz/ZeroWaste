@@ -2,7 +2,6 @@ import json
 
 from produkt import ProduktSztuki, ProduktWaga
 
-
 def load_produkty_z_json(path, katalog):
     with open(path, "r", encoding="utf-8") as f:
         dane = json.load(f)
@@ -24,7 +23,6 @@ def load_produkty_z_json(path, katalog):
 
         produkt.isFrozen = p.get("zamrozone", False)
 
-        # tags (optional)
         for tag in p.get("tags", []):
             produkt.add_tag(tag)
 
