@@ -1,110 +1,79 @@
 [
   {
-    "id": "8d4658d2",
+    "id": "f53a97c2",
     "nazwa": "Masło",
-    "data": "2026-01-12",
+    "data": "2026-02-01",
     "zamrozone": false,
-    "tags": [
-      "nabiał"
-    ],
+    "tags": [],
     "typ": "waga",
-    "ilosc": 0.25,
-    "jednostka": "kg"
+    "ilosc": 250.0,
+    "jednostka": "g"
   },
   {
-    "id": "e2bad660",
-    "nazwa": "Chleb",
-    "data": "2026-01-18",
-    "zamrozone": false,
-    "tags": [
-      "pieczywo"
-    ],
-    "typ": "waga",
-    "ilosc": 1,
-    "jednostka": "kg"
-  },
-  {
-    "id": "0fde9555",
-    "nazwa": "Ser żółty",
-    "data": "2026-01-08",
-    "zamrozone": false,
-    "tags": [
-      "nabiał",
-      "przekąska"
-    ],
+    "id": "59753ad6",
+    "nazwa": "Pierś z kurczaka",
+    "data": "2026-02-04",
+    "zamrozone": true,
+    "tags": [],
     "typ": "waga",
     "ilosc": 0.5,
     "jednostka": "kg"
   },
   {
-    "id": "67570d01",
-    "nazwa": "Marchew",
-    "data": "2026-01-25",
+    "id": "89d30472",
+    "nazwa": "Ketchup",
+    "data": "2026-06-30",
     "zamrozone": false,
-    "tags": [
-      "warzywa"
-    ],
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "kg"
+    "tags": [],
+    "typ": "sztuki",
+    "ilosc": 1.0
   },
   {
-    "id": "0dd2e9ed",
-    "nazwa": "Jabłka",
-    "data": "2026-01-20",
-    "zamrozone": false,
-    "tags": [
-      "owoce"
-    ],
-    "typ": "waga",
-    "ilosc": 1.2,
-    "jednostka": "kg"
-  },
-  {
-    "id": "5cf3cd4d",
-    "nazwa": "Kurczak",
-    "data": "2025-12-31",
-    "zamrozone": true,
-    "tags": [
-      "mięso"
-    ],
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "kg"
-  },
-  {
-    "id": "0b62014c",
-    "nazwa": "Pomidory",
-    "data": "2026-01-16",
-    "zamrozone": false,
-    "tags": [
-      "warzywa",
-      "sałatka"
-    ],
-    "typ": "waga",
-    "ilosc": 0.8,
-    "jednostka": "kg"
-  },
-  {
-    "id": "3a495538",
-    "nazwa": "Banany",
-    "data": "2026-01-13",
-    "zamrozone": true,
-    "tags": [
-      "owoce"
-    ],
-    "typ": "waga",
-    "ilosc": 1.5,
-    "jednostka": "kg"
-  },
-  {
-    "id": "49450cd5",
-    "nazwa": "Test",
-    "data": "2026-01-07",
+    "id": "d69371b0",
+    "nazwa": "Pierś z kurczaka",
+    "data": "2026-02-04",
     "zamrozone": false,
     "tags": [],
     "typ": "waga",
-    "ilosc": 54.0,
+    "ilosc": 1.0,
+    "jednostka": "kg"
+  },
+  {
+    "id": "0c5ca321",
+    "nazwa": "Majonez",
+    "data": "2026-08-27",
+    "zamrozone": false,
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 250.0,
+    "jednostka": "g"
+  },
+  {
+    "id": "80b598fb",
+    "nazwa": "Pomidory",
+    "data": "2026-01-29",
+    "zamrozone": false,
+    "tags": [],
+    "typ": "sztuki",
+    "ilosc": 5.0
+  },
+  {
+    "id": "16757d51",
+    "nazwa": "Marchew",
+    "data": "2026-01-26",
+    "zamrozone": false,
+    "tags": [],
+    "typ": "sztuki",
+    "ilosc": 2.0
+  },
+  {
+    "id": "b1779792",
+    "nazwa": "Lody",
+    "data": "2026-07-09",
+    "zamrozone": true,
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 250.0,
     "jednostka": "g"
   }
 ]

@@ -1,64 +1,60 @@
 [
   {
-    "id": "2c43ffc3",
-    "nazwa": "Ser żółty",
-    "data": "2026-01-08",
+    "id": "6ec5c839",
+    "nazwa": "Mleko",
+    "data": null,
     "zamrozone": false,
-    "tags": [
-      "nabiał",
-      "przekąska"
-    ],
+    "tags": [],
+    "typ": "waga",
+    "ilosc": 2.0,
+    "jednostka": "l"
+  },
+  {
+    "id": "6efdcd51",
+    "nazwa": "Jajka",
+    "data": null,
+    "zamrozone": false,
+    "tags": [],
+    "typ": "sztuki",
+    "ilosc": 12.0
+  },
+  {
+    "id": "1395989e",
+    "nazwa": "Ser",
+    "data": null,
+    "zamrozone": false,
+    "tags": [],
     "typ": "waga",
     "ilosc": 0.5,
     "jednostka": "kg"
   },
   {
-    "id": "6011ba6e",
-    "nazwa": "Marchew",
-    "data": "2026-01-25",
+    "id": "4aadd00b",
+    "nazwa": "Coca-Cola",
+    "data": null,
     "zamrozone": false,
-    "tags": [
-      "warzywa"
-    ],
+    "tags": [],
     "typ": "waga",
     "ilosc": 1.0,
-    "jednostka": "kg"
+    "jednostka": "l"
   },
   {
-    "id": "17a7e69a",
-    "nazwa": "Jabłka",
-    "data": "2026-01-20",
+    "id": "9aaf3241",
+    "nazwa": "Sałata",
+    "data": null,
     "zamrozone": false,
-    "tags": [
-      "owoce"
-    ],
-    "typ": "waga",
-    "ilosc": 1.2,
-    "jednostka": "kg"
+    "tags": [],
+    "typ": "sztuki",
+    "ilosc": 2.0
   },
   {
-    "id": "be404d30",
-    "nazwa": "Kurczak",
-    "data": "2025-12-31",
-    "zamrozone": true,
-    "tags": [
-      "mięso"
-    ],
-    "typ": "waga",
-    "ilosc": 1.0,
-    "jednostka": "kg"
-  },
-  {
-    "id": "9e71a368",
-    "nazwa": "Pomidory",
-    "data": "2026-01-16",
+    "id": "7aa0c47f",
+    "nazwa": "Szynka",
+    "data": null,
     "zamrozone": false,
-    "tags": [
-      "warzywa",
-      "sałatka"
-    ],
+    "tags": [],
     "typ": "waga",
-    "ilosc": 0.8,
-    "jednostka": "kg"
+    "ilosc": 200.0,
+    "jednostka": "g"
   }
 ]
